@@ -1,0 +1,23 @@
+{
+  "name": "pobocka-brno",
+  "content": [
+    {
+      "x": 1,
+      "y": 1,
+      "name": "ponozky",
+      "amount": 42
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "name": "boty",
+      "amount": 41
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "name": "ponozky",
+      "amount": 42
+    }
+  ]
+}
