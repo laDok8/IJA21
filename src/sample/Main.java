@@ -19,19 +19,16 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         //launch(args);
-        jsonParser xx = null;
+        JsonParser xx = null;
         try {
-            xx = new jsonParser("sample.json");
+            xx = new JsonParser("sample.json");
         } catch (Exception e) {
             System.err.println("chyba parser");
             System.exit(1);
         }
-        for(var x : xx.storedObjects){
-            System.out.println(x.x+" "+x.y+" ");
-        }
-
-
-
+        xx.storedObjects.forEach((key, value) -> {
+            System.out.println(key+" : "+value);
+        });
 
         System.exit(0);
     }
