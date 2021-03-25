@@ -1,0 +1,22 @@
+[
+  {
+    "name": "ponozky",
+    "amount": 2
+  },
+  {
+    "name": "boty",
+    "amount": 5
+  },
+  {
+    "name": "triko",
+    "amount": 4
+  },
+  {
+    "name": "kalhoty",
+    "amount": 4
+  },
+  {
+    "name": "svetr",
+    "amount": 9
+  }
+]
