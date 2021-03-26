@@ -40,7 +40,9 @@ public class Main extends Application {
             System.out.println(cordinates.x+" : "+ cordinates.y);
         });*/
 
-        Node.aStar(new Cordinates(1, 1), new Cordinates(1, 2), xx.storedObjects);
+
+        Node.updatePaths(xx.storedObjects);
+        var vysl = Node.aStar(new Cordinates(1, 1), new Cordinates(2, 1), xx.storedObjects);
 
         System.exit(0);
     }

@@ -3,77 +3,107 @@ package sample;
 import java.util.*;
 
 class Node implements Comparable<Node> {
-    Cordinates parent, self;
+    Cordinates parent,self;
     //distance from finish
-    Double f = Double.MAX_VALUE;
+    Double h = Double.MAX_VALUE;
     //distance from start
     Double g = Double.MAX_VALUE;
     //g+h
-    Double h;
+    //Double f;
+    List<Node> neighbours = new ArrayList<>();
 
-    public Double getF() {
-        return f;
-    }
-
-    public void setF(Double f) {
-        this.f = f;
-    }
-
-    public Double getG() {
-        return g;
-    }
-
-    public void setG(Double g) {
-        this.g = g;
-    }
-
-    public Node(Double h, Cordinates parent, Cordinates self) {
-        this.h = h;
-        this.parent = parent;
+    public Node(Cordinates self){
         this.self = self;
+    }
+
+    public void update(Cordinates parent,double g){
+        this.g = g;
+        this.parent = parent;
+    }
+    public Double heuristic(){
+        return g+h;
     }
 
     @Override
     public int compareTo(Node x) {
-        return (int) (this.h - x.h);
+        return (int) (this.heuristic() - x.heuristic());
     }
 
+    static Map<Cordinates,Node> paths = new Hashtable<>();
 
-    public static void aStar(Cordinates start, Cordinates end, Map<Cordinates, Shelf> shelfs) {
-        Queue<Node> open = new PriorityQueue<>();
-        Queue<Node> closed = new PriorityQueue<>();
-        Node startN = new Node(0.0, null, start);
-        open.add(startN);
-        int CONSTANT = 40;
+    static final int CONSTANT = 3;
 
+    public static void updatePaths( Map<Cordinates, Shelf> shelfs){
 
-        while (!open.isEmpty()) {
-            Node next = open.poll();
-            if (next.self == end) {
-                System.out.println("WIN");
-                return;
+        //make new paths ( opposite of shelfs)
+        paths.clear();
+        for (int x = 0; x <= CONSTANT; x++) {
+            for (int y = 0; y <= CONSTANT; y++) {
+                Cordinates position = new Cordinates(x,y);
+                //is shelf
+                if(shelfs.containsKey(position))
+                    continue;
+                paths.put(position,new Node(position));
             }
+        }
 
-            //GET NEIGHBOURS
-            for (int x = next.self.x - 1; x <= next.self.x + 1; x++) {
-                for (int y = next.self.y - 1; y <= next.self.y + 1; y++) {
+        //add neighbour
+        for(var entry : paths.entrySet()){
+            int x = entry.getKey().x;
+            int y = entry.getKey().y;
+
+            for(int x1=x-1;x1<=x+1;x1++){
+                for(int y1=y-1;y1<=y+1;y1++){
+                    Cordinates seek = new Cordinates(x1,y1);
                     //out of bounds
-                    if (x < 0 || x > CONSTANT || y < 0 || y > CONSTANT)
+                    if (x1 < 0 || x1 > CONSTANT || y1 < 0 || y1 > CONSTANT)
                         continue;
-                    //wall
-                    if (shelfs.containsKey(new Cordinates(x, y)))
+                    //wall or self
+                    if (shelfs.containsKey(seek) || (x1 == x && y1 == y))
                         continue;
-                    //already discovered - check if better path
-                    /*if(closed.contains(next) || open.contains(next)){
-                        next.
-                    }*/
-
+                    entry.getValue().neighbours.add(paths.get(seek));
                 }
             }
-
-
         }
 
 
+    }
+
+
+    public static Node aStar(Cordinates start, Cordinates end, Map<Cordinates, Shelf> shelfs) {
+        Queue<Node> open = new PriorityQueue<>();
+        Queue<Node> closed = new PriorityQueue<>();
+        Node startN = paths.get(start);
+        open.add(startN);
+        startN.g = .0;
+
+
+        while (!open.isEmpty()) {
+            Node next = open.peek();
+            if (next == paths.get(end)) {
+                System.out.println("WIN");
+                return next;
+            }
+
+            for(var node : next.neighbours){
+                node.h = end.getDistance(node.self);
+
+                if(!open.contains(node) && !closed.contains(node)){
+                    node.parent = next.self;
+                    node.g = next.g + next.self.getDistance(node.self);
+                    open.add(node);
+                } else if(next.g + next.self.getDistance(node.self) < node.g) {
+                        node.parent = next.self;
+                        node.g = next.g + next.self.getDistance(node.self);
+                        if(!closed.contains(node)){
+                            closed.remove(node);
+                            open.add(node);
+                        }
+                }
+            }
+            open.remove(next);
+            closed.add(next);
+        }
+    return null;
     }
 }
