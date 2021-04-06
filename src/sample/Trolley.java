@@ -6,8 +6,8 @@ public class Trolley extends Storeable{
     /**
      * @param id_in - identifikacia vozika
      */
-    public Trolley(int id_in,int x, int y){
-        super(x,y);
+    public Trolley(int id_in, Cordinates cord){
+        super(cord.x, cord.y);
         this.id = id_in;
         this.capacity = 5;
         this.items_in = 0;

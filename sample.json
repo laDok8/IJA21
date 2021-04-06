@@ -1,5 +1,17 @@
 {
   "name": "pobocka-brno",
+  "trolley": [
+    {
+     "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 2,
+      "y": 2
+    }
+  ],
   "content": [
     {
       "x": 0,

@@ -36,13 +36,24 @@ public class Main extends Application {
             System.exit(2);
         }
 
-        /*xx.storedObjects.forEach((cordinates, tmp) -> {
-            System.out.println(cordinates.x+" : "+ cordinates.y);
-        });*/
+        xx.storedObjects.forEach((cordinates, tmp) -> {
+            System.out.println("Stored-Obj: "+cordinates.x+" : "+cordinates.y+ " "+tmp);
+        });
+        System.out.println("----------------------------------------------------------");
+        xx.trolleyObjects.forEach((id, co) -> {
+            System.out.println("TROLLEY-id: "+id+ ", position: " +co.x+" : "+ co.y);
+        });
+        System.out.println("----------------------------------------------------------");
+        yy.requirements.forEach((name, count) -> {
+            System.out.println("REQUIRE-name: "+name+ ", require amount: " +count);
+        });
+        System.out.println("----------------------------------------------------------");
 
+
+        System.out.println();
 
         Node.updatePaths(xx.storedObjects);
-        var vysl = Node.aStar(new Cordinates(1, 1), new Cordinates(2, 1), xx.storedObjects);
+        var vysl = Node.aStar(new Cordinates(1, 1), new Cordinates(10, 1), xx.storedObjects);
 
         System.exit(0);
     }
