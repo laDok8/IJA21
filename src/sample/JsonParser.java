@@ -1,13 +1,10 @@
 package sample;
 
-import java.util.Map;
-import java.util.HashMap;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.util.stream.Collectors;
-
-
 import java.io.FileReader;
 import java.util.*;
 
@@ -36,7 +33,7 @@ public class JsonParser {
             int x = Integer.parseInt(itr1.get("x").toString());
             int y = Integer.parseInt(itr1.get("y").toString());
             Cordinates co = new Cordinates(x, y);
-            String name = itr1.get("y").toString();
+            String name = itr1.get("name").toString();
             int amount = Integer.parseInt(itr1.get("amount").toString());
             //System.out.println(x+""+y+""+name);
             Shelf tmp = storedObjects.getOrDefault(co, new Shelf(co));
@@ -57,28 +54,14 @@ public class JsonParser {
             //System.out.println("Trolley id: "+id+" position: "+x+" : "+y);
 
         }
+    }
 
 
-        //example of filtering saving for later
-        /*var xyz = storedObjects.entrySet()
+    Map<Cordinates, Shelf> findGoods(String name){
+        var result = storedObjects.entrySet()
                 .stream()
-                .filter(map -> "boty".equals(map.getValue())
-                .collect(Collectors.toMap(map -> map.getKey(), map -> map.getValue()));
-            */
-
-
-        // hladam regal, ktory obsahuje polozku "boty"
-        Cordinates co = new Cordinates(3, 1);
-        String name = "**********"; //aj napriek name = "*******", ktore neexistuje v shelfe! to "uspesne" najde polozku
-        int amount = 999999;
-        Shelf search = storedObjects.getOrDefault(co, new Shelf(co));
-        search.add_item(name, amount);
-
-        Map<Cordinates, Shelf> result = storedObjects.entrySet()
-                .stream()
-                .filter(map-> search.equals(map.getValue()))
+                .filter(map-> map.getValue().stored.containsKey(name))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        System.out.println("Result: " + result);
+        return result;
     }
 }

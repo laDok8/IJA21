@@ -3,7 +3,8 @@ package sample;
 import java.util.*;
 
 class Node implements Comparable<Node> {
-    Cordinates parent,self;
+    Cordinates self;
+    Node parent;
     //distance from finish
     Double h = Double.MAX_VALUE;
     //distance from start
@@ -16,7 +17,7 @@ class Node implements Comparable<Node> {
         this.self = self;
     }
 
-    public void update(Cordinates parent,double g){
+    public void update(Node parent,double g){
         this.g = g;
         this.parent = parent;
     }
@@ -70,7 +71,7 @@ class Node implements Comparable<Node> {
     }
 
 
-    public static Node aStar(Cordinates start, Cordinates end, Map<Cordinates, Shelf> shelfs) {
+    public static Node aStar(Cordinates start, Cordinates end) {
         Queue<Node> open = new PriorityQueue<>();
         Queue<Node> closed = new PriorityQueue<>();
         Node startN = paths.get(start);
@@ -80,8 +81,7 @@ class Node implements Comparable<Node> {
 
         while (!open.isEmpty()) {
             Node next = open.peek();
-            if (next == paths.get(end)) {
-                System.out.println("WIN");
+            if (next == paths.get(end) || next.self.getDistance(end) == 1) {
                 return next;
             }
 
@@ -89,11 +89,11 @@ class Node implements Comparable<Node> {
                 node.h = end.getDistance(node.self);
 
                 if(!open.contains(node) && !closed.contains(node)){
-                    node.parent = next.self;
+                    node.parent = next;
                     node.g = next.g + next.self.getDistance(node.self);
                     open.add(node);
                 } else if(next.g + next.self.getDistance(node.self) < node.g) {
-                        node.parent = next.self;
+                        node.parent = next;
                         node.g = next.g + next.self.getDistance(node.self);
                         if(!closed.contains(node)){
                             closed.remove(node);

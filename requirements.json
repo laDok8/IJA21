@@ -1,6 +1,6 @@
 [
   {
-    "name": "ponozky",
+    "name": "kosile",
     "amount": 2
   },
   {
@@ -8,15 +8,15 @@
     "amount": 5
   },
   {
-    "name": "triko",
-    "amount": 4
+    "name": "saly",
+    "amount": 5
   },
   {
-    "name": "kalhoty",
-    "amount": 4
+    "name": "plavky",
+    "amount": 5
   },
   {
-    "name": "svetr",
-    "amount": 9
+    "name": "puncochy",
+    "amount": 5
   }
 ]
