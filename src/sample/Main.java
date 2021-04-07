@@ -63,19 +63,21 @@ public class Main extends Application {
         }
 
         jsonParser.storedObjects.forEach((cordinates, tmp) -> {
-            System.out.println("Stored-Obj: "+cordinates.x+" : "+cordinates.y+ " "+tmp);
+            System.out.println("Stored-Obj: " + cordinates.x + " : " + cordinates.y + " " + tmp);
         });
         System.out.println("----------------------------------------------------------");
         jsonParser.trolleyObjects.forEach((id, co) -> {
-            System.out.println("TROLLEY-id: "+id+ ", position: " +co.x+" : "+ co.y);
+            System.out.println("TROLLEY-id: " + id + ", position: " + co.x + " : " + co.y);
         });
         System.out.println("----------------------------------------------------------");
         reqParser.requirements.forEach((name, count) -> {
-            System.out.println("REQUIRE-name: "+name+ ", require amount: " +count);
+            System.out.println("REQUIRE-name: " + name + ", require amount: " + count);
         });
-        System.out.println("----------------------------------------------------------");
-
-
+        System.out.println();
+        System.out.println("**************************************************************************");
+        System.out.println("*************************  ITEMS *****************************************");
+        System.out.println("**************************************************************************");
+        System.out.println();
         System.out.println();
 
         Node.updatePaths(jsonParser.storedObjects);
@@ -84,42 +86,60 @@ public class Main extends Application {
 
         JsonParser finalJsonParser = jsonParser;
         reqParser.requirements.forEach((name, count) -> {
-            Cordinates my_position_cord = new Cordinates(1,1);
-            TreeMap<Double, Cordinates> sorted_by_distances = new TreeMap<>();
-            int need_count = count;
-            Map<Cordinates,Shelf> found = finalJsonParser.findGoods(name);
+            Cordinates myPositionCord = new Cordinates(1, 1);
+            TreeMap<Double, Cordinates> sortedByDistances = new TreeMap<>();
+            int RequiredItemsAmount = count;
+            Map<Cordinates, Shelf> found = finalJsonParser.findGoods(name);
 
-            for(Map.Entry<Cordinates,Shelf> entry : found.entrySet()){
+            if (found.size() < 1) {
+                System.out.println("!!!!!!! ERROR: POZADOVANA POLOZKA: " + name + " NENI SKLADEM !!!!!!!!!");
+            }
+
+            for (Map.Entry<Cordinates, Shelf> entry : found.entrySet()) {
                 int x = entry.getKey().x;//cordinate
                 int y = entry.getKey().y;
-                Shelf shelf = entry.getValue();
-                Map<String,Integer> ulozeneZbozi = shelf.stored;
-                int count1 = ulozeneZbozi.get(name);
-                //entry.getValue().stored.get("boty"
+                //entry.getValue();//shelf
+                int countItemsInShelf = entry.getValue().stored.get(name);
+                double distance = entry.getKey().getDistance(myPositionCord);
+                sortedByDistances.put(distance, entry.getKey());
 
-                double distance = entry.getKey().getDistance(my_position_cord);
-                sorted_by_distances.put(distance, entry.getKey());
+                System.out.println("name: " + name);
+                System.out.println("x: " + x);
+                System.out.println("y: " + y);
+                System.out.println("shelf count: " + countItemsInShelf);
+                System.out.println("distance: " + distance);
 
-                System.out.println("name: "+name);
-                System.out.println("x: "+x);
-                System.out.println("y: "+y);
-                System.out.println("shelf count: "+count1);
-                System.out.println("distance: "+distance);
-                entry.getValue();//shelf
-            }
-
-            //System.out.println(sorted_by_distances); //print all distances
-            if(sorted_by_distances.size() != 0) {
-                Cordinates lowest_disance_cord = sorted_by_distances.firstEntry().getValue(); //min distance Cordinates value
-                var vysl2 = Node.aStar(my_position_cord, lowest_disance_cord);
-                    while(vysl2 != null){
-                        System.out.print(vysl2+"->");
-                        vysl2 = vysl2.parent;
+                System.out.println("---------------------------");
+                System.out.print("POCET POLOZIEK NA SKLADE: ");
+                if (found.size() == 1) { //polozka je iba v 1 Shelfe
+                    if (RequiredItemsAmount <= countItemsInShelf) {
+                        System.out.println("OK");
+                        //TODO: delete_item + poslat vozik k regalu + mnozstvi polozek ve voziku++
+                    } else {    //ERROR - chcem viac ks ako mame na sklade
+                        System.out.println("!!!!!!! ERROR: POZADOVANE MNOZSTVI NENI SKLADEM !!!!!!!!!");
                     }
-                System.out.println("PATH_END");
-                System.out.println("ASTAR OUTPUT: "+vysl2);
+                } else {    //polozka je vo viacerych shelf-och
+                    System.out.println("Polozka je vo viacerich shelf-och TODO:NENI implementovano");
+                    //TODO: vybrat najblizsi regal + zistit ci postacuje mnozstvo na nom alebo pridat aj dalsi regal
+                }
+                System.out.println("---------------------------");
             }
-            System.out.println("----------------- NEXT ITEM ----------------------------");
+
+
+            if (sortedByDistances.size() != 0) {
+                Cordinates lowestDisanceCord = sortedByDistances.firstEntry().getValue(); //min distance Cordinates value
+                System.out.println("(CHECKING): Vybrana kratsia vzdialenost ma suradnice: x:" + lowestDisanceCord.x + " y:" + lowestDisanceCord.y);
+                var vysl2 = Node.aStar(myPositionCord, lowestDisanceCord);
+                while (vysl2 != null) {
+                    System.out.print(vysl2 + "->");
+                    vysl2 = vysl2.parent;
+                }
+                System.out.println("PATH_END");
+                System.out.println("ASTAR OUTPUT: " + vysl2);
+            }
+            System.out.println();
+            System.out.println("************************* NEXT ITEM *****************************************");
+            System.out.println();
         });
 
 
