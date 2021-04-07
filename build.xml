@@ -1,0 +1,22 @@
+<project>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+
+    <target name="compile">
+        <mkdir dir="build"/>
+
+        <javac classpath="org.json.simple" srcdir="src" destdir="build"/>
+    </target>
+
+    <target name="run" depends="compile">
+        <java classname="sample.Main">
+            <classpath path="build"/>
+        </java>
+    </target>
+
+
+
+</project>

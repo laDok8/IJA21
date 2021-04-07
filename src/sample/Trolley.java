@@ -26,13 +26,19 @@ public class Trolley extends Storeable{
     }
 
     public void moveX(int direction) {
-        if (Math.abs(direction) == 1){
+        //if (Math.abs(direction) == 1){
+        if (direction == 1){
             this.x += direction;
+        } else if (direction == -1){
+            this.x -= direction;
         }
     }
     public void moveY(int direction) {
-        if (Math.abs(direction) == 1){
+        //if (Math.abs(direction) == 1){
+        if (direction == 1){
             this.y += direction;
+        } else if (direction == -1){
+            this.y -= direction;
         }
     }
 

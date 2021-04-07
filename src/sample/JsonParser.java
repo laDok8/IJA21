@@ -10,52 +10,62 @@ import java.util.*;
 
 public class JsonParser {
 
-    public Map<Cordinates, Shelf> storedObjects;
-    public Map<Integer, Cordinates> trolleyObjects;
+
+
+
+    private Map<Cordinates, Shelf> storedObjects = new Hashtable<>();
+    private List<Trolley> trolleyObjects = new ArrayList<>();
+    private List<Cordinates> stagingObjects = new ArrayList<>();
+    private int maxX;
+    private int maxY;
+
 
     public JsonParser(String filename) throws Exception {
-        storedObjects = new Hashtable<>();
-        trolleyObjects = new Hashtable<>();
         JSONObject obj = (JSONObject) new JSONParser().parse(new FileReader(filename));
         JSONArray content = (JSONArray) obj.getOrDefault("content", new JSONArray());
         JSONArray trolley = (JSONArray) obj.getOrDefault("trolley", new JSONArray());
+        JSONArray staging = (JSONArray) obj.getOrDefault("staging", new JSONArray());
 
-        // iterating phoneNumbers
-        Iterator itr2 = content.iterator();
+        maxX = ((Long) obj.get("maxX")).intValue();
+        maxY = ((Long) obj.get("maxY")).intValue();
 
-        while (itr2.hasNext()) {
-            Map itr1 = ((Map) itr2.next());
-            /*while (itr1.hasNext()) {
-                Map.Entry pair = itr1.next();
-                System.out.println(pair.getKey() + " : " + pair.getValue());
-            }*/
-            //System.out.println(itr1.get("x") + " " + itr1.get("y"));
-            int x = Integer.parseInt(itr1.get("x").toString());
-            int y = Integer.parseInt(itr1.get("y").toString());
+        // iterating gooods
+        Iterator iterator = content.iterator();
+        while (iterator.hasNext()) {
+            Map entry = ((Map) iterator.next());
+            int x = ((Long) entry.get("x")).intValue();
+            int y = ((Long) entry.get("y")).intValue();
             Cordinates co = new Cordinates(x, y);
-            String name = itr1.get("name").toString();
-            int amount = Integer.parseInt(itr1.get("amount").toString());
-            //System.out.println(x+""+y+""+name);
+            String name = entry.get("name").toString();
+            int amount = ((Long) entry.get("amount")).intValue();
             Shelf tmp = storedObjects.getOrDefault(co, new Shelf(co));
             tmp.add_item(name, amount);
             storedObjects.put(co, tmp);
         }
 
-        // iterating trolley array
-        Iterator itr3 = trolley.iterator();
-        while (itr3.hasNext()) {
-            Map itr4 = ((Map) itr3.next());
 
-            int id = Integer.parseInt(itr4.get("id").toString());
-            int x = Integer.parseInt(itr4.get("x").toString());
-            int y = Integer.parseInt(itr4.get("y").toString());
+        //iterating trolleys
+        iterator = trolley.iterator();
+        while (iterator.hasNext()) {
+            Map entry = ((Map) iterator.next());
+            int id = ((Long) entry.get("id")).intValue();
+            int x = ((Long) entry.get("x")).intValue();
+            int y = ((Long) entry.get("y")).intValue();
             Cordinates co = new Cordinates(x, y);
-            trolleyObjects.put(id, co);
-            //System.out.println("Trolley id: "+id+" position: "+x+" : "+y);
+            Trolley ntrolley = new Trolley(id,co);
+            trolleyObjects.add(ntrolley);
+        }
 
+        //iterating staging arreas
+        iterator = staging.iterator();
+        while (iterator.hasNext()) {
+            Map entry = ((Map) iterator.next());
+            int x = ((Long) entry.get("x")).intValue();
+            int y = ((Long) entry.get("y")).intValue();
+            Cordinates co = new Cordinates(x, y);
+            stagingObjects.add(co);
         }
     }
-
 
     Map<Cordinates, Shelf> findGoods(String name){
         var result = storedObjects.entrySet()
@@ -63,5 +73,23 @@ public class JsonParser {
                 .filter(map-> map.getValue().stored.containsKey(name))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         return result;
+    }
+
+    Map<Cordinates, Shelf> getAllGoods(){
+        return storedObjects;
+    }
+    List<Trolley> getTrolleys(){
+        return trolleyObjects;
+    }
+    List<Cordinates> getStages() {
+        return stagingObjects;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public int getMaxY() {
+        return maxY;
     }
 }

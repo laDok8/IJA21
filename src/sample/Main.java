@@ -1,6 +1,6 @@
 package sample;
 
-import javafx.application.Application;
+/*import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -9,38 +9,41 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import javafx.stage.Stage;*/
 
 import javax.swing.*;
 import java.util.*;
 
-public class Main extends Application {
+public class Main{
 
 
-    Pane root;
+    /*Pane root; extends Application
 
     @Override
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage){*/
 
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
+
+        /*<taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+        uri="javafx:com.sun.javafx.tools.ant" classpath=".:C:\Program Files\Java\jdk1.7.0_09\lib\ant-javafx.jar"/>*/
+        /*Button btn = new Button();
+        btn.setText("Say 'Hello World'");*/
 
         /*btn.setOnAction(actionEvent -> {
             btn.setLayoutX(btn.getLayoutX() + 10);
             btn.setLayoutY(btn.getLayoutY() + 10);
-        });*/
+        })
 
-        root = new Pane();
+        //root = new Pane();
         /*root.getChildren().add(btn);
         btn.setLayoutX(10);
         btn.setLayoutY(10);*/
 
-        Scene scene = new Scene(root, 300, 250);
+        /*Scene scene = new Scene(root, 300, 250);
 
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
-        primaryStage.show();
-    }
+        primaryStage.show();*/
+    //}
 
 
     public static void main(String[] args) {
@@ -52,8 +55,10 @@ public class Main extends Application {
             System.err.println("chyba parser: sample.json");
             System.exit(1);
         }
+        final int maxX = jsonParser.getMaxX();
+        final int maxY = jsonParser.getMaxY();
 
-        // requirements.json parser
+
         RequirementsParser reqParser = null;
         try {
             reqParser = new RequirementsParser("requirements.json");
@@ -62,31 +67,27 @@ public class Main extends Application {
             System.exit(2);
         }
 
-        jsonParser.storedObjects.forEach((cordinates, tmp) -> {
+        jsonParser.getAllGoods().forEach((cordinates, tmp) -> {
             System.out.println("Stored-Obj: " + cordinates.x + " : " + cordinates.y + " " + tmp);
-        });
-        System.out.println("----------------------------------------------------------");
-        jsonParser.trolleyObjects.forEach((id, co) -> {
-            System.out.println("TROLLEY-id: " + id + ", position: " + co.x + " : " + co.y);
         });
         System.out.println("----------------------------------------------------------");
         reqParser.requirements.forEach((name, count) -> {
             System.out.println("REQUIRE-name: " + name + ", require amount: " + count);
         });
-        System.out.println();
-        System.out.println("**************************************************************************");
+        System.out.println("\n**************************************************************************");
         System.out.println("*************************  ITEMS *****************************************");
-        System.out.println("**************************************************************************");
-        System.out.println();
-        System.out.println();
+        System.out.println("**************************************************************************\n\n");
 
-        Node.updatePaths(jsonParser.storedObjects);
-        //var vysl = Node.aStar(new Cordinates(1, 1), new Cordinates(2, 1), jsonParser.storedObjects);
-        //var xz = jsonParser.findGoods("boty");
+        //initalize pathifinding sturcure
+        FindPath findPath = new FindPath(maxX, maxY);
+        //update every time shelfs are changed
+        findPath.updatePaths(jsonParser.getAllGoods());
+
 
         JsonParser finalJsonParser = jsonParser;
         reqParser.requirements.forEach((name, count) -> {
-            Cordinates myPositionCord = new Cordinates(1, 1);
+            Cordinates myPositionCord = new Cordinates(finalJsonParser.getTrolleys().get(0).x, finalJsonParser.getTrolleys().get(0).y);
+
             TreeMap<Double, Cordinates> sortedByDistances = new TreeMap<>();
             int RequiredItemsAmount = count;
             Map<Cordinates, Shelf> found = finalJsonParser.findGoods(name);
@@ -129,20 +130,89 @@ public class Main extends Application {
             if (sortedByDistances.size() != 0) {
                 Cordinates lowestDisanceCord = sortedByDistances.firstEntry().getValue(); //min distance Cordinates value
                 System.out.println("(CHECKING): Vybrana kratsia vzdialenost ma suradnice: x:" + lowestDisanceCord.x + " y:" + lowestDisanceCord.y);
-                var vysl2 = Node.aStar(myPositionCord, lowestDisanceCord);
+                PathNode vysl2 = findPath.aStar(myPositionCord, lowestDisanceCord);
+
+
+
                 while (vysl2 != null) {
-                    System.out.print(vysl2 + "->");
+                    //System.out.print(vysl2 + "->");
+                    Trolley trolley = finalJsonParser.getTrolleys().get(0);
+                    System.out.println("Vozik ma suradnice: x:" + myPositionCord.x + " y:" +myPositionCord.y);
+                    //System.out.println("NOVE X,Y: " + vysl2.self.x + ":" + vysl2.self.y );
+
+                    //naopak
+                    int trolleyMove[] = new int[2];
+                    PathNode vysl3 = vysl2;
+                    while (vysl3.parent.self != myPositionCord){
+                        trolleyMove[0] = vysl3.self.x;
+                        trolleyMove[1] = vysl3.self.y;
+
+                        System.out.println("NOVE X,Y: " +trolleyMove[0] + ":" + trolleyMove[1] );
+
+                        if (vysl3.self.x > myPositionCord.x){
+                            trolley.moveX(1);
+                        } else  if (vysl3.self.x < myPositionCord.x){
+                            trolley.moveX(-1);
+                        }
+                        if (vysl3.self.y > myPositionCord.y){
+                            trolley.moveY(1);
+                        } else  if (vysl3.self.y < myPositionCord.y){
+                            trolley.moveY(-1);
+                        }
+                        vysl3 = vysl3.parent;
+                    }
+
+                    System.out.println("Vozik ma NOVE suradnice: x:" + myPositionCord.x + " y:" +myPositionCord.y);
+                    System.out.println("--------------------------------------------------------");
+
+                    //Trolley trolley = finalJsonParser.getTrolleys().get(0);
+                    //trolley.moveX(trolleyMove[0]);
+                    //System.out.println("Vozik ma suradnice: x:" + myPositionCord.x + " y:" +myPositionCord.y);
+                    //System.out.println("MOVE TROLEY: " +trolleyMove[0] + ":" + trolleyMove[1]);
+
                     vysl2 = vysl2.parent;
                 }
-                System.out.println("PATH_END");
-                System.out.println("ASTAR OUTPUT: " + vysl2);
+                //System.out.println("PATH_END");
+                //System.out.println("ASTAR OUTPUT: " + vysl2);
             }
             System.out.println();
             System.out.println("************************* NEXT ITEM *****************************************");
             System.out.println();
         });
 
+        Boolean running = true;
+        while(running) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        //System.exit(0);
+            //define map
+            String[][] map = new String[maxX][maxY];
+            for (String[] row: map){
+                Arrays.fill(row, "  ");
+            }
+
+            //put shelf into map
+            jsonParser.getAllGoods().forEach((cordinates, tmp) -> {
+                map[cordinates.y][cordinates.x] = "X";
+            });
+
+            //put trolley into map
+            //finalJsonParser.getTrolleys().forEach((id, co) -> {
+            map[finalJsonParser.getTrolleys().get(0).x][finalJsonParser.getTrolleys().get(0).y] = "O";
+            //});
+
+            //print map
+            for (int row = 0; row < map.length; row++) {
+                for (int col = 0; col < map[row].length; col++) {
+                    System.out.print(map[row][col]);
+                }
+                System.out.println("");
+            }
+            System.out.println("--------- NEXT MAP UPDATE -----------------");
+        }
+
     }
 }
