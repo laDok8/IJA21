@@ -165,7 +165,6 @@ public class Main {
         jsonParser.getAllGoods().forEach((cordinates, tmp) -> {
             map[cordinates.y][cordinates.x] = "X";
         });
-        printMap(map);
 
         Boolean running = true;
         while (running) {
@@ -231,13 +230,14 @@ public class Main {
                 }
 
                 //TODO pres metodu menit pozici
+                map[trolley.y][trolley.x] = "T";
+                printMap(map);
+                map[trolley.y][trolley.x] = " ";  //mazanie cesty vozika
                 System.out.println("ZMENA POZICE VOZIKU: [" + trolley.x + ":" + trolley.y + "]");
                 System.out.println("------------- MAP UPDATE ------------------");
                 if (curentCordinates.getDistance(lowestDisanceCord) != 1) {
                     trolley.x = vysl2.self.x;
                     trolley.y = vysl2.self.y;
-                    map[trolley.y][trolley.x] = "T";
-                    printMap(map);
                 } else {
                     trolley.task = null;
                     System.out.println("-------------------- DALSIA POZIADAVKA --------------------------");
