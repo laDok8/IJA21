@@ -6,6 +6,7 @@ import java.util.Map;
 public class Trolley extends Storeable {
     private int id, capacity, items_in;
     Integer[][][] newPosition = new Integer[100][100][2]; //TODO: Mala by stacit velkost [5][100][2] kedze 5 poloziek/vozik max
+    public Map.Entry<String, Integer> task;
     Map<String, Integer> trolleyItems = new HashMap<>();
 
     /**

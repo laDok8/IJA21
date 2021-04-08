@@ -45,25 +45,7 @@ public class Main {
         primaryStage.show();*/
     //}
 
-    public static void changeTrolleyPosition(Trolley trolley, int itemNumber, int moveCount, String[][] map){
-        //Changing trolley X-sur
-        if (trolley.x < trolley.newPosition[itemNumber][moveCount][0]) {
-            trolley.moveX(1);
-        } else if (trolley.x > trolley.newPosition[itemNumber][moveCount][0]) {
-            trolley.moveX(-1);
-        }
-
-        //Changing trolley y-sur
-        if (trolley.y < trolley.newPosition[itemNumber][moveCount][1]) {
-            trolley.moveY(1);
-        } else if (trolley.y > trolley.newPosition[itemNumber][moveCount][1]) {
-            trolley.moveY(-1);
-        }
-        map[trolley.y][trolley.x] = "T";
-
-    }
-
-    public static void printMap(String[][] map){
+    public static void printMap(String[][] map) {
         for (int row = 0; row < map.length; row++) {
             for (int col = 0; col < map[row].length; col++) {
                 System.out.print(map[row][col]);
@@ -94,14 +76,14 @@ public class Main {
         }
 
         jsonParser.getAllGoods().forEach((cordinates, tmp) -> {
-            System.out.println("Stored-Obj: " + cordinates.x + " : " + cordinates.y + " " + tmp);
+            System.out.println("Pozice regalu: [" + cordinates.x + ":" + cordinates.y + "]");
         });
         System.out.println("----------------------------------------------------------");
         reqParser.requirements.forEach((name, count) -> {
-            System.out.println("REQUIRE-name: " + name + ", require amount: " + count);
+            System.out.println("Pozadovane zbozi: " + name + ", " + count + " ks");
         });
         System.out.println("\n**************************************************************************");
-        System.out.println("*************************  ITEMS *****************************************");
+        System.out.println("*************************  MAPA ******************************************");
         System.out.println("**************************************************************************\n\n");
 
         //initalize pathifinding sturcure
@@ -110,8 +92,9 @@ public class Main {
         findPath.updatePaths(jsonParser.getAllGoods());
 
 
+        //iterate requirements
         JsonParser finalJsonParser = jsonParser;
-        reqParser.requirements.forEach((name, count) -> {
+        /*reqParser.requirements.forEach((name, count) -> {
             Cordinates myPositionCord = new Cordinates(finalJsonParser.getTrolleys().get(0).x, finalJsonParser.getTrolleys().get(0).y);
             Trolley trolley = finalJsonParser.getTrolleys().get(0); //TODO: ID vozika ktory berie polozku
 
@@ -120,7 +103,7 @@ public class Main {
             Map<Cordinates, Shelf> found = finalJsonParser.findGoods(name);
 
             if (found.size() < 1) {
-                System.out.println("!!!!!!! ERROR: POZADOVANA POLOZKA: " + name + " NENI SKLADEM !!!!!!!!!");
+                System.out.println("ERROR: POZADOVANA POLOZKA: " + name + " NENI SKLADEM!");
             }
 
             for (Map.Entry<Cordinates, Shelf> entry : found.entrySet()) {
@@ -142,7 +125,7 @@ public class Main {
                 if (found.size() == 1) { //polozka je iba v 1 Shelfe
                     if (RequiredItemsAmount <= countItemsInShelf) {
                         trolley.addItem(name, count);
-                        System.out.println("CISLO POLOZKY V TROLLEY LISTE: "+(trolley.itemsAmount() - 1));
+                        System.out.println("CISLO POLOZKY V TROLLEY LISTE: " + (trolley.itemsAmount() - 1));
                         System.out.println("OK");
                     } else {    //ERROR - chcem viac ks ako mame na sklade
                         System.out.println("!!!!!!! ERROR: POZADOVANE MNOZSTVI NENI SKLADEM !!!!!!!!!");
@@ -150,7 +133,7 @@ public class Main {
                 } else {    //polozka je vo viacerych shelf-och
                     System.out.println("Polozka je vo viacerich shelf-och TODO:NENI implementovano");
                     trolley.addItem(name, count);
-                    System.out.println("CISLO POLOZKY V TROLLEY LISTE: "+(trolley.itemsAmount() - 1));
+                    System.out.println("CISLO POLOZKY V TROLLEY LISTE: " + (trolley.itemsAmount() - 1));
                     //TODO: vybrat najblizsi regal + zistit ci postacuje mnozstvo na nom alebo pridat aj dalsi regal
                 }
                 System.out.println("---------------------------");
@@ -164,7 +147,6 @@ public class Main {
                 int moveCount = 0;
                 //System.out.println("POCET POLOZEK NA VOZIKU: " + trolley.itemsAmount());
                 while (vysl2 != null) {
-                    System.out.println("ZAPISUJEM SURADNICE PRE POHYB VOZIKA: " + vysl2.self.x + ":" + vysl2.self.y);
                     trolley.addNewPosition(trolley.itemsAmount() - 1, moveCount, vysl2.self.x, vysl2.self.y);
                     //System.out.println("ZAPISUJEM SURADNICE POLOZKY: " + (trolley.itemsAmount() - 1));
                     vysl2 = vysl2.parent;
@@ -172,22 +154,107 @@ public class Main {
                 }
             }
             System.out.println("************************* NEXT ITEM *****************************************");
+        });*/
+        //create empty map
+        String[][] map = new String[maxX][maxY];
+        for (String[] row : map) {
+            Arrays.fill(row, " ");
+        }
+
+        //put all shelf into map
+        jsonParser.getAllGoods().forEach((cordinates, tmp) -> {
+            map[cordinates.y][cordinates.x] = "X";
         });
+        printMap(map);
 
         Boolean running = true;
         while (running) {
+            //set speed
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            //Create empty map
-            String[][] map = new String[maxX][maxY];
-            for (String[] row : map) {
-                Arrays.fill(row, " ");
+            //iterate trolleys
+            for (Trolley trolley : jsonParser.getTrolleys()) {
+
+                //set task to empty trolleys
+                if (trolley.task == null && reqParser.requirements.size() > 0) {
+                    var tmp = reqParser.requirements.entrySet().iterator().next();
+                    trolley.task = new AbstractMap.SimpleEntry<String, Integer>(tmp.getKey(), tmp.getValue());
+                    reqParser.requirements.remove(tmp.getKey());
+                }
+                //ending condition
+                if (reqParser.requirements.size() == 0 && jsonParser.getTrolleys().stream().allMatch(trolley1 -> trolley1.task == null)) {
+                    System.out.println("WIN");
+                    running = false;
+                    break;
+
+                }
+
+                //sort shelfs by distance
+                TreeMap<Double, Cordinates> sortedByDistances = new TreeMap<>();
+                Map<Cordinates, Shelf> found = finalJsonParser.findGoods(trolley.task.getKey());
+
+                for (Map.Entry<Cordinates, Shelf> entry : found.entrySet()) {
+                    double distance = entry.getKey().getDistance(trolley);
+                    sortedByDistances.put(distance, entry.getKey());
+                }
+
+
+                //compute path to shortest
+                if (sortedByDistances.size() == 0) {
+                    System.out.println("ERROR-no items");
+                    //TODO zmenit
+                    trolley.task = null;
+                    continue;
+                }
+                Cordinates lowestDisanceCord = sortedByDistances.firstEntry().getValue(); //min distance Cordinates value
+                Cordinates curentCordinates = new Cordinates(trolley.x, trolley.y);
+                PathNode vysl2 = findPath.aStar(curentCordinates, lowestDisanceCord);
+
+
+                if (vysl2 == null) {
+                    System.out.println("ERROR-no path");
+                    //TODO zmenit
+                    trolley.task = null;
+                    continue;
+                }
+                //vysl2.parent != null &&
+                var tmpCord = vysl2;
+                while (!tmpCord.self.equals(curentCordinates)) {
+                    vysl2 = tmpCord;
+                    tmpCord = vysl2.parent;
+                }
+
+                //TODO pres metodu menit pozici
+                System.out.println("ZMENA POZICE VOZIKU: [" + trolley.x + ":" + trolley.y + "]");
+                System.out.println("------------- MAP UPDATE ------------------");
+                if (curentCordinates.getDistance(lowestDisanceCord) != 1) {
+                    trolley.x = vysl2.self.x;
+                    trolley.y = vysl2.self.y;
+                    map[trolley.y][trolley.x] = "T";
+                    printMap(map);
+                } else {
+                    trolley.task = null;
+                    System.out.println("-------------------- DALSIA POZIADAVKA --------------------------");
+
+                    //Set map to default position
+                    for (String[] row : map) {
+                        Arrays.fill(row, " ");
+                    }
+
+                    //put all shelf into map
+                    jsonParser.getAllGoods().forEach((cordinates, tmp) -> {
+                        map[cordinates.y][cordinates.x] = "X";
+                    });
+                }
             }
 
+
+
+            /*
             //put all shelf into map
             jsonParser.getAllGoods().forEach((cordinates, tmp) -> {
                 map[cordinates.y][cordinates.x] = "X";
@@ -197,7 +264,7 @@ public class Main {
 
             Trolley trolley = finalJsonParser.getTrolleys().get(0); //TODO: ID vozikov
 
-            for (int itemNumber = trolley.itemsAmount() - 1; itemNumber >= 0; itemNumber--){
+            for (int itemNumber = trolley.itemsAmount() - 1; itemNumber >= 0; itemNumber--) {
                 System.out.println("-----------------------------------------------------------------------------------");
                 System.out.println("*********** TROLLEY ROUTE from start to item number: ********** " + itemNumber);
                 //Trolley route from start position to Shelf
@@ -219,8 +286,8 @@ public class Main {
                         System.out.println("--------- MAP UPDATE -----------------");
                     }
                 }
-            }
-            running = false;
+            }*/
+            //running = false;
         }
     }
 }
