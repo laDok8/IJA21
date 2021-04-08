@@ -68,7 +68,8 @@ public class JsonParser {
     }
 
     Map<Cordinates, Shelf> findGoods(String name){
-        var result = storedObjects.entrySet()
+        Map<Cordinates, Shelf> result;
+        result = storedObjects.entrySet()
                 .stream()
                 .filter(map-> map.getValue().stored.containsKey(name))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

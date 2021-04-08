@@ -33,7 +33,7 @@ public class FindPath {
         }
 
         //add neighbour
-        for(var entry : paths.entrySet()){
+        for(Map.Entry<Cordinates, PathNode> entry : paths.entrySet()){
             int x = entry.getKey().x;
             int y = entry.getKey().y;
 
@@ -68,7 +68,7 @@ public class FindPath {
                 return next;
             }
 
-            for(var node : next.neighbours){
+            for(PathNode node : next.neighbours){
                 node.h = end.getDistance(node.self);
 
                 if(!open.contains(node) && !closed.contains(node)){

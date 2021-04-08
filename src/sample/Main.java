@@ -181,7 +181,8 @@ public class Main {
 
                 //set task to empty trolleys
                 if (trolley.task == null && reqParser.requirements.size() > 0) {
-                    var tmp = reqParser.requirements.entrySet().iterator().next();
+                    Map.Entry<String, Integer> tmp;
+                    tmp = reqParser.requirements.entrySet().iterator().next();
                     trolley.task = new AbstractMap.SimpleEntry<String, Integer>(tmp.getKey(), tmp.getValue());
                     reqParser.requirements.remove(tmp.getKey());
                 }
@@ -222,7 +223,8 @@ public class Main {
                     continue;
                 }
                 //vysl2.parent != null &&
-                var tmpCord = vysl2;
+                PathNode tmpCord;
+                tmpCord = vysl2;
                 while (!tmpCord.self.equals(curentCordinates)) {
                     vysl2 = tmpCord;
                     tmpCord = vysl2.parent;
