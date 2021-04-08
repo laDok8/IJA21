@@ -11,10 +11,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;*/
 
-import javax.swing.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Main{
+public class Main {
 
 
     /*Pane root; extends Application
@@ -45,6 +45,32 @@ public class Main{
         primaryStage.show();*/
     //}
 
+    public static void changeTrolleyPosition(Trolley trolley, int itemNumber, int moveCount, String[][] map){
+        //Changing trolley X-sur
+        if (trolley.x < trolley.newPosition[itemNumber][moveCount][0]) {
+            trolley.moveX(1);
+        } else if (trolley.x > trolley.newPosition[itemNumber][moveCount][0]) {
+            trolley.moveX(-1);
+        }
+
+        //Changing trolley y-sur
+        if (trolley.y < trolley.newPosition[itemNumber][moveCount][1]) {
+            trolley.moveY(1);
+        } else if (trolley.y > trolley.newPosition[itemNumber][moveCount][1]) {
+            trolley.moveY(-1);
+        }
+        map[trolley.y][trolley.x] = "T";
+
+    }
+
+    public static void printMap(String[][] map){
+        for (int row = 0; row < map.length; row++) {
+            for (int col = 0; col < map[row].length; col++) {
+                System.out.print(map[row][col]);
+            }
+            System.out.println("");
+        }
+    }
 
     public static void main(String[] args) {
         //launch(args);
@@ -87,6 +113,7 @@ public class Main{
         JsonParser finalJsonParser = jsonParser;
         reqParser.requirements.forEach((name, count) -> {
             Cordinates myPositionCord = new Cordinates(finalJsonParser.getTrolleys().get(0).x, finalJsonParser.getTrolleys().get(0).y);
+            Trolley trolley = finalJsonParser.getTrolleys().get(0); //TODO: ID vozika ktory berie polozku
 
             TreeMap<Double, Cordinates> sortedByDistances = new TreeMap<>();
             int RequiredItemsAmount = count;
@@ -114,13 +141,16 @@ public class Main{
                 System.out.print("POCET POLOZIEK NA SKLADE: ");
                 if (found.size() == 1) { //polozka je iba v 1 Shelfe
                     if (RequiredItemsAmount <= countItemsInShelf) {
+                        trolley.addItem(name, count);
+                        System.out.println("CISLO POLOZKY V TROLLEY LISTE: "+(trolley.itemsAmount() - 1));
                         System.out.println("OK");
-                        //TODO: delete_item + poslat vozik k regalu + mnozstvi polozek ve voziku++
                     } else {    //ERROR - chcem viac ks ako mame na sklade
                         System.out.println("!!!!!!! ERROR: POZADOVANE MNOZSTVI NENI SKLADEM !!!!!!!!!");
                     }
                 } else {    //polozka je vo viacerych shelf-och
                     System.out.println("Polozka je vo viacerich shelf-och TODO:NENI implementovano");
+                    trolley.addItem(name, count);
+                    System.out.println("CISLO POLOZKY V TROLLEY LISTE: "+(trolley.itemsAmount() - 1));
                     //TODO: vybrat najblizsi regal + zistit ci postacuje mnozstvo na nom alebo pridat aj dalsi regal
                 }
                 System.out.println("---------------------------");
@@ -129,90 +159,68 @@ public class Main{
 
             if (sortedByDistances.size() != 0) {
                 Cordinates lowestDisanceCord = sortedByDistances.firstEntry().getValue(); //min distance Cordinates value
-                System.out.println("(CHECKING): Vybrana kratsia vzdialenost ma suradnice: x:" + lowestDisanceCord.x + " y:" + lowestDisanceCord.y);
                 PathNode vysl2 = findPath.aStar(myPositionCord, lowestDisanceCord);
 
-
-
+                int moveCount = 0;
+                //System.out.println("POCET POLOZEK NA VOZIKU: " + trolley.itemsAmount());
                 while (vysl2 != null) {
-                    //System.out.print(vysl2 + "->");
-                    Trolley trolley = finalJsonParser.getTrolleys().get(0);
-                    System.out.println("Vozik ma suradnice: x:" + myPositionCord.x + " y:" +myPositionCord.y);
-                    //System.out.println("NOVE X,Y: " + vysl2.self.x + ":" + vysl2.self.y );
-
-                    //naopak
-                    int trolleyMove[] = new int[2];
-                    PathNode vysl3 = vysl2;
-                    while (vysl3.parent.self != myPositionCord){
-                        trolleyMove[0] = vysl3.self.x;
-                        trolleyMove[1] = vysl3.self.y;
-
-                        System.out.println("NOVE X,Y: " +trolleyMove[0] + ":" + trolleyMove[1] );
-
-                        if (vysl3.self.x > myPositionCord.x){
-                            trolley.moveX(1);
-                        } else  if (vysl3.self.x < myPositionCord.x){
-                            trolley.moveX(-1);
-                        }
-                        if (vysl3.self.y > myPositionCord.y){
-                            trolley.moveY(1);
-                        } else  if (vysl3.self.y < myPositionCord.y){
-                            trolley.moveY(-1);
-                        }
-                        vysl3 = vysl3.parent;
-                    }
-
-                    System.out.println("Vozik ma NOVE suradnice: x:" + myPositionCord.x + " y:" +myPositionCord.y);
-                    System.out.println("--------------------------------------------------------");
-
-                    //Trolley trolley = finalJsonParser.getTrolleys().get(0);
-                    //trolley.moveX(trolleyMove[0]);
-                    //System.out.println("Vozik ma suradnice: x:" + myPositionCord.x + " y:" +myPositionCord.y);
-                    //System.out.println("MOVE TROLEY: " +trolleyMove[0] + ":" + trolleyMove[1]);
-
+                    System.out.println("ZAPISUJEM SURADNICE PRE POHYB VOZIKA: " + vysl2.self.x + ":" + vysl2.self.y);
+                    trolley.addNewPosition(trolley.itemsAmount() - 1, moveCount, vysl2.self.x, vysl2.self.y);
+                    //System.out.println("ZAPISUJEM SURADNICE POLOZKY: " + (trolley.itemsAmount() - 1));
                     vysl2 = vysl2.parent;
+                    moveCount++;
                 }
-                //System.out.println("PATH_END");
-                //System.out.println("ASTAR OUTPUT: " + vysl2);
             }
-            System.out.println();
             System.out.println("************************* NEXT ITEM *****************************************");
-            System.out.println();
         });
 
         Boolean running = true;
-        while(running) {
+        while (running) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            //define map
+            //Create empty map
             String[][] map = new String[maxX][maxY];
-            for (String[] row: map){
-                Arrays.fill(row, "  ");
+            for (String[] row : map) {
+                Arrays.fill(row, " ");
             }
 
-            //put shelf into map
+            //put all shelf into map
             jsonParser.getAllGoods().forEach((cordinates, tmp) -> {
                 map[cordinates.y][cordinates.x] = "X";
             });
+            //put all trolley into map
+            map[finalJsonParser.getTrolleys().get(0).y][finalJsonParser.getTrolleys().get(0).x] = "T";
 
-            //put trolley into map
-            //finalJsonParser.getTrolleys().forEach((id, co) -> {
-            map[finalJsonParser.getTrolleys().get(0).x][finalJsonParser.getTrolleys().get(0).y] = "O";
-            //});
+            Trolley trolley = finalJsonParser.getTrolleys().get(0); //TODO: ID vozikov
 
-            //print map
-            for (int row = 0; row < map.length; row++) {
-                for (int col = 0; col < map[row].length; col++) {
-                    System.out.print(map[row][col]);
+            for (int itemNumber = trolley.itemsAmount() - 1; itemNumber >= 0; itemNumber--){
+                System.out.println("-----------------------------------------------------------------------------------");
+                System.out.println("*********** TROLLEY ROUTE from start to item number: ********** " + itemNumber);
+                //Trolley route from start position to Shelf
+                for (int moveCount = trolley.newPosition[itemNumber].length - 1; moveCount >= 0; moveCount--) {
+                    if (trolley.newPosition[itemNumber][moveCount][0] != null) {
+                        //map[trolley.y][trolley.x] = " ";  //mazanie cesty vozika
+                        changeTrolleyPosition(trolley, itemNumber, moveCount, map);
+                        printMap(map);
+                        System.out.println("--------- MAP UPDATE -----------------");
+                    }
                 }
-                System.out.println("");
+                System.out.println("*********** TROLLEY ROUTE BACK to START **********");
+                //Trolley route from Shelf to start
+                for (int moveCount = 0; moveCount <= trolley.newPosition[itemNumber].length - 1; moveCount++) {
+                    if (trolley.newPosition[itemNumber][moveCount][0] != null) {
+                        map[trolley.y][trolley.x] = " ";  //mazanie cesty vozika
+                        changeTrolleyPosition(trolley, itemNumber, moveCount, map);
+                        printMap(map);
+                        System.out.println("--------- MAP UPDATE -----------------");
+                    }
+                }
             }
-            System.out.println("--------- NEXT MAP UPDATE -----------------");
+            running = false;
         }
-
     }
 }
