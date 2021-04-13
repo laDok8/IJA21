@@ -4,7 +4,7 @@
   @author Adrián Bobola (xbobol00)
  */
 
-package sample;
+package ija21;
 
 public class Controller {
 }

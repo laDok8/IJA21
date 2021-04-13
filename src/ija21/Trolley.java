@@ -4,13 +4,14 @@
   @author Adrián Bobola (xbobol00)
  */
 
-package sample;
+package ija21;
 
 import java.util.Map;
 
 public class Trolley extends Storeable {
     private final int id;
     private final int capacity;
+
     public Map.Entry<String, Integer> task;
 
     /**
@@ -37,7 +38,7 @@ public class Trolley extends Storeable {
      * @return amount of items
      */
     public int getItemInCount() {
-        return stored.size();
+        return this.getStored().size();
     }
 
     /**

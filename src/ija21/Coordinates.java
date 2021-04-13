@@ -4,7 +4,7 @@
   @author Adrián Bobola (xbobol00)
  */
 
-package sample;
+package ija21;
 
 import java.util.Objects;
 
@@ -24,10 +24,20 @@ public class Coordinates {
         return Objects.hash(x, y);
     }
 
+    /**
+     * cordinate position
+     * @param x position on horizontal axis
+     * @param y position on vertical axis
+     */
     public Coordinates(int x, int y){
         this.x = x;
         this.y = y;
     }
+    /**
+     * get straight line distance between two cordinates
+     * @param cord 2.nd cordinate
+     * @return distance of cordinates
+     */
     public double getDistance(Coordinates cord){
         return Math.sqrt(Math.pow(this.x - cord.x,2) + Math.pow(this.y - cord.y,2));
     }

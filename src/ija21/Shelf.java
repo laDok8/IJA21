@@ -3,7 +3,7 @@
   @author Ladislav Dokoupil (xdokou14)
   @author Adrián Bobola (xbobol00)
  */
-package sample;
+package ija21;
 
 public class Shelf extends Storeable{
 

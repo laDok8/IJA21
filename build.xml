@@ -25,7 +25,7 @@
     <target name="jar" depends="compile">
         <jar destfile="${build}/${jar}" basedir="${build}" excludes="**/*.jar">
             <manifest>
-                <attribute name="Main-Class" value="sample.Main"/>
+                <attribute name="Main-Class" value="ija21.Main"/>
                 <attribute name="Class-Path" value="${library}/json-simple-1.1.jar"/>
             </manifest>
         </jar>
@@ -48,9 +48,9 @@
                  windowtitle="IJA PROJEKT"
                  charset="UTF-8">
             <classpath>
-			    <fileset dir = "${library}">
-			    <include name = "json-simple-1.1.jar"/>
-		    </fileset>
+                <fileset dir="${library}">
+                    <include name="json-simple-1.1.jar"/>
+                </fileset>
             </classpath>
             <doctitle><![CDATA[<h1>IJA PROJEKT</h1>]]></doctitle>
             <bottom><![CDATA[<i>Autor: Dokoupil Ladislav, Bobola Adrián</i>]]></bottom>

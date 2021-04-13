@@ -4,14 +4,14 @@
   @author Adrián Bobola (xbobol00)
  */
 
-package sample;
+package ija21;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Storeable extends Coordinates {
 
-    Map<String,Integer> stored = new HashMap<>();
+    private Map<String,Integer> stored = new HashMap<>();
 
     public Storeable(int x, int y) {
         super(x, y);
@@ -46,5 +46,9 @@ public abstract class Storeable extends Coordinates {
             stored.remove(name);
             return storedCount;
         }
+    }
+
+    public Map<String, Integer> getStored() {
+        return stored;
     }
 }

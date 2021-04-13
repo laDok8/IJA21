@@ -4,7 +4,7 @@
   @author Adrián Bobola (xbobol00)
  */
 
-package sample;
+package ija21;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -15,8 +15,7 @@ public class FindPath {
 
 
     private Map<Coordinates, PathNode> paths = new Hashtable<>();
-
-     private int maxX, maxY;
+    private int maxX, maxY;
 
     /**
      * initalize map limits
@@ -82,23 +81,23 @@ public class FindPath {
             return null;
         PathNode startN = paths.get(start);
         open.add(startN);
-        startN.g = .0;
+        startN.update(null,.0);
 
 
         while (!open.isEmpty()) {
             PathNode next = open.peek();
-            if (next == paths.get(end) || next.self.getDistance(end) == 1) {
+            if (next == paths.get(end) || next.getSelf().getDistance(end) == 1) {
                 return next;
             }
 
             for(PathNode node : next.neighbours){
-                node.h = end.getDistance(node.self);
+                node.setH(end.getDistance(node.getSelf()));
 
                 if(!open.contains(node) && !closed.contains(node)){
-                    node.update(next, next.g + next.self.getDistance(node.self));
+                    node.update(next, next.getG() + next.getSelf().getDistance(node.getSelf()));
                     open.add(node);
-                } else if(next.g + next.self.getDistance(node.self) < node.g) {
-                    node.update(next, next.g + next.self.getDistance(node.self));
+                } else if(next.getG() + next.getSelf().getDistance(node.getSelf()) < node.getG()) {
+                    node.update(next, next.getG() + next.getSelf().getDistance(node.getSelf()));
                     if(!closed.contains(node)){
                         closed.remove(node);
                         open.add(node);

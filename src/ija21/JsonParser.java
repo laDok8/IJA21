@@ -3,7 +3,7 @@
   @author Ladislav Dokoupil (xdokou14)
   @author Adrián Bobola (xbobol00)
  */
-package sample;
+package ija21;
 
 
 import org.json.simple.JSONArray;
@@ -86,7 +86,7 @@ public class JsonParser {
         Map<Coordinates, Shelf> result;
         result = storedObjects.entrySet()
                 .stream()
-                .filter(map-> map.getValue().stored.containsKey(name))
+                .filter(map-> map.getValue().getStored().containsKey(name))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         return result;
     }

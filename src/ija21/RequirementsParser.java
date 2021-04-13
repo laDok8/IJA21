@@ -3,11 +3,9 @@
   @author Ladislav Dokoupil (xdokou14)
   @author Adrián Bobola (xbobol00)
  */
-package sample;
+package ija21;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONAware;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 
@@ -15,7 +13,7 @@ import java.io.FileReader;
 import java.util.*;
 
 public class RequirementsParser {
-    public Map<String, Integer> requirements;
+    private Map<String, Integer> requirements = new Hashtable<>();
 
     /**
      * Parses requirements json file into local structures requirements
@@ -23,8 +21,6 @@ public class RequirementsParser {
      * @throws Exception no such file found or bad JSON structure
      */
     public RequirementsParser(String filename) throws Exception {
-        requirements = new Hashtable<>();
-
         JSONArray tmp = (JSONArray) new JSONParser().parse(new FileReader(filename));
         Iterator itr2 = tmp.iterator();
 
@@ -34,5 +30,9 @@ public class RequirementsParser {
             int amount = Integer.parseInt(itr1.get("amount").toString());
             requirements.put(name, amount);
         }
+    }
+
+    public Map<String, Integer> getRequirements() {
+        return requirements;
     }
 }
