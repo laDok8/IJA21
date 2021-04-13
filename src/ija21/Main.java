@@ -22,6 +22,37 @@ public class Main {
         }
     }
 
+
+    //xbobol00 - demonstation class
+    public static void main(String[] args) {
+        //load shelfs
+        JsonParser jsonParser = null;
+        try {
+            jsonParser = new JsonParser("data/sample.json");
+        } catch (Exception e) {
+            System.err.println("chyba parser: sample.json");
+            System.exit(1);
+        }
+        //load required items list
+        RequirementsParser reqParser = null;
+        try {
+            reqParser = new RequirementsParser("data/requirements.json");
+        } catch (Exception e) {
+            System.err.println("chyba parser: requirements.json");
+            System.exit(2);
+        }
+
+        //print all shelfs into output
+        System.out.println("-------------------- REGAL NA SKLADE -----------------------");
+        jsonParser.getAllShelfs().forEach((cordinates, tmp) ->
+                System.out.println("Regal [" + cordinates.x + ":" + cordinates.y + "], zbozi:" + tmp.getStored()));
+        System.out.println("-------------------- POZIADAVKY -----------------------");
+        //print required items into output
+        reqParser.getRequirements().forEach(
+                (name, count) -> System.out.println("Pozadovane zbozi: " + name + ", " + count + " ks"));
+    }
+/*
+    //xdokou14 - demonstation class
     public static void main(String[] args) {
         //load shelfs
         JsonParser jsonParser = null;
@@ -43,18 +74,6 @@ public class Main {
             System.exit(2);
         }
 
-        //print all shelfs into output
-        System.out.println("-------------------- REGAL NA SKLADE -----------------------");
-        jsonParser.getAllShelfs().forEach((cordinates, tmp) ->
-                System.out.println("Regal [" + cordinates.x + ":" + cordinates.y + "], zbozi:" + tmp.getStored()));
-        System.out.println("-------------------- POZIADAVKY -----------------------");
-        //print required items into output
-        reqParser.getRequirements().forEach(
-                (name, count) -> System.out.println("Pozadovane zbozi: " + name + ", " + count + " ks"));
-        System.out.println("\n**************************************************************************");
-        System.out.println("*************************  MAPA ******************************************");
-        System.out.println("**************************************************************************\n");
-
         //initalize pathifinding structure
         FindPath findPath = new FindPath(maxX, maxY);
         //update every time shelfs are changed
@@ -71,13 +90,6 @@ public class Main {
 
         boolean running = true;
         while (running) {
-            //set refreshing speed
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             //iterate trolleys
             for (Trolley trolley : jsonParser.getTrolleys()) {
 
@@ -89,10 +101,10 @@ public class Main {
                     reqParser.getRequirements().remove(tmp.getKey());
                 }
                 //ending condition
-                if (reqParser.getRequirements().size() == 0 && jsonParser.getTrolleys().stream().allMatch(trolley1 -> trolley1.task == null)) {
+                if (reqParser.getRequirements().size() == 0 && jsonParser.getTrolleys().stream().allMatch(
+                        trolley1 -> trolley1.task == null)) {
                     running = false;
                     break;
-
                 }
 
                 //sort shelfs by distance
@@ -137,7 +149,6 @@ public class Main {
                 printMap(map);
                 //delete trolley previous coordinates
                 map[trolley.y][trolley.x] = " ";
-                System.out.println("ZMENA POZICE VOZIKU: [" + trolley.x + ":" + trolley.y + "]");
                 System.out.println("------------- MAP UPDATE ------------------");
                 if (curentCoordinates.getDistance(lowestDisanceCord) != 1) {
                     trolley.x = vysl2.getSelf().x;
@@ -170,6 +181,7 @@ public class Main {
             System.out.println("\n---POLOZKY VE VOZIKU "+ntrolley+"---");
             trolley.getStored().forEach((name,count)-> System.out.println(name+"-> "+count));
             ntrolley++;
-            }
         }
     }
+    */
+}
