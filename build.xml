@@ -47,6 +47,11 @@
                  use="true"
                  windowtitle="IJA PROJEKT"
                  charset="UTF-8">
+            <classpath>
+			    <fileset dir = "${library}">
+			    <include name = "json-simple-1.1.jar"/>
+		    </fileset>
+            </classpath>
             <doctitle><![CDATA[<h1>IJA PROJEKT</h1>]]></doctitle>
             <bottom><![CDATA[<i>Autor: Dokoupil Ladislav, Bobola Adrián</i>]]></bottom>
         </javadoc>
