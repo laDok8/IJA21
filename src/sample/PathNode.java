@@ -1,9 +1,14 @@
+/*
+  Class PathNode
+  @author Ladislav Dokoupil (xdokou14)
+  @author Adrián Bobola (xbobol00)
+ */
 package sample;
 
 import java.util.*;
 
 class PathNode implements Comparable<PathNode> {
-    Cordinates self;
+    Coordinates self;
     PathNode parent;
     //distance from finish
     Double h = Double.MAX_VALUE;
@@ -12,7 +17,7 @@ class PathNode implements Comparable<PathNode> {
 
     List<PathNode> neighbours = new ArrayList<>();
 
-    public PathNode(Cordinates self){
+    public PathNode(Coordinates self){
         this.self = self;
     }
 

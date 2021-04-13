@@ -1,14 +1,16 @@
+/*
+  Class Shelf
+  @author Ladislav Dokoupil (xdokou14)
+  @author Adrián Bobola (xbobol00)
+ */
 package sample;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Shelf extends Storeable{
 
     public Shelf(int x, int y){
         super(x,y);
     }
-    public Shelf(Cordinates cord){
+    public Shelf(Coordinates cord){
         super(cord.x, cord.y);
     }
 }

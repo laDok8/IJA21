@@ -1,3 +1,8 @@
+/*
+  Class RequirementsParser parse all require arguments
+  @author Ladislav Dokoupil (xdokou14)
+  @author Adrián Bobola (xbobol00)
+ */
 package sample;
 
 import org.json.simple.JSONArray;
@@ -12,6 +17,11 @@ import java.util.*;
 public class RequirementsParser {
     public Map<String, Integer> requirements;
 
+    /**
+     * Parses requirements json file into local structures requirements
+     * @param filename file path
+     * @throws Exception no such file found or bad JSON structure
+     */
     public RequirementsParser(String filename) throws Exception {
         requirements = new Hashtable<>();
 
@@ -22,9 +32,6 @@ public class RequirementsParser {
             Map itr1 = ((Map) itr2.next());
             String name = itr1.get("name").toString();
             int amount = Integer.parseInt(itr1.get("amount").toString());
-
-            //test print System.out.println(name+" "+amount);
-
             requirements.put(name, amount);
         }
     }

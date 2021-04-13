@@ -1,3 +1,8 @@
+/*
+  Class JsonParser
+  @author Ladislav Dokoupil (xdokou14)
+  @author Adrián Bobola (xbobol00)
+ */
 package sample;
 
 
@@ -13,14 +18,20 @@ public class JsonParser {
 
 
 
-    private Map<Cordinates, Shelf> storedObjects = new Hashtable<>();
-    private List<Trolley> trolleyObjects = new ArrayList<>();
-    private List<Cordinates> stagingObjects = new ArrayList<>();
-    private int maxX;
-    private int maxY;
+    private final Map<Coordinates, Shelf> storedObjects = new Hashtable<>();
+    private final List<Trolley> trolleyObjects = new ArrayList<>();
+    private final List<Coordinates> stagingObjects = new ArrayList<>();
+    private final int maxX;
+    private final int maxY;
 
 
+    /**
+     * Parses JSON file into local structures storedObjects, trolleyObjects and stagingObjects
+     * @param filename file path
+     * @throws Exception no such file found or bad JSON structure
+     */
     public JsonParser(String filename) throws Exception {
+        //praparing json file
         JSONObject obj = (JSONObject) new JSONParser().parse(new FileReader(filename));
         JSONArray content = (JSONArray) obj.getOrDefault("content", new JSONArray());
         JSONArray trolley = (JSONArray) obj.getOrDefault("trolley", new JSONArray());
@@ -35,14 +46,13 @@ public class JsonParser {
             Map entry = ((Map) iterator.next());
             int x = ((Long) entry.get("x")).intValue();
             int y = ((Long) entry.get("y")).intValue();
-            Cordinates co = new Cordinates(x, y);
+            Coordinates co = new Coordinates(x, y);
             String name = entry.get("name").toString();
             int amount = ((Long) entry.get("amount")).intValue();
             Shelf tmp = storedObjects.getOrDefault(co, new Shelf(co));
             tmp.add_item(name, amount);
             storedObjects.put(co, tmp);
         }
-
 
         //iterating trolleys
         iterator = trolley.iterator();
@@ -51,7 +61,7 @@ public class JsonParser {
             int id = ((Long) entry.get("id")).intValue();
             int x = ((Long) entry.get("x")).intValue();
             int y = ((Long) entry.get("y")).intValue();
-            Cordinates co = new Cordinates(x, y);
+            Coordinates co = new Coordinates(x, y);
             Trolley ntrolley = new Trolley(id,co);
             trolleyObjects.add(ntrolley);
         }
@@ -62,13 +72,18 @@ public class JsonParser {
             Map entry = ((Map) iterator.next());
             int x = ((Long) entry.get("x")).intValue();
             int y = ((Long) entry.get("y")).intValue();
-            Cordinates co = new Cordinates(x, y);
+            Coordinates co = new Coordinates(x, y);
             stagingObjects.add(co);
         }
     }
 
-    Map<Cordinates, Shelf> findGoods(String name){
-        Map<Cordinates, Shelf> result;
+    /**
+     * searches all shelfs for item with given name
+     * @param name goods name to be searched
+     * @return shelfs including item with given name
+     */
+    Map<Coordinates, Shelf> findGoods(String name){
+        Map<Coordinates, Shelf> result;
         result = storedObjects.entrySet()
                 .stream()
                 .filter(map-> map.getValue().stored.containsKey(name))
@@ -76,20 +91,40 @@ public class JsonParser {
         return result;
     }
 
-    Map<Cordinates, Shelf> getAllGoods(){
+    /**
+     * get stored shelfs
+     * @return all existing shelfs
+     */
+    Map<Coordinates, Shelf> getAllShelfs(){
         return storedObjects;
     }
+    /**
+     * get stored trolleys
+     * @return all existing trolleys
+     */
     List<Trolley> getTrolleys(){
         return trolleyObjects;
     }
-    List<Cordinates> getStages() {
+    /**
+     * get stored staging area cordinates
+     * @return all existing staging areas
+     */
+    List<Coordinates> getStages() {
         return stagingObjects;
     }
 
+    /**
+     * accessible JSON structures are limited to 0-maxX on x axis
+     * @return map limit in horizontal axis
+     */
     public int getMaxX() {
         return maxX;
     }
 
+    /**
+     * accessible JSON structures are limited to 0-maxY on y axis
+     * @return map limit in vertical axis
+     */
     public int getMaxY() {
         return maxY;
     }

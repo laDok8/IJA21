@@ -1,3 +1,9 @@
+/*
+  Class FindPatch find the shortest patch from trolley to shelf
+  @author Ladislav Dokoupil (xdokou14)
+  @author Adrián Bobola (xbobol00)
+ */
+
 package sample;
 
 import java.util.Hashtable;
@@ -8,23 +14,32 @@ import java.util.Queue;
 public class FindPath {
 
 
-    Map<Cordinates, PathNode> paths = new Hashtable<>();
+    private Map<Coordinates, PathNode> paths = new Hashtable<>();
 
-     int maxX, maxY;
+     private int maxX, maxY;
 
+    /**
+     * initalize map limits
+     * @param maxX horizontal limit 0-maxX
+     * @param maxY vertical limit 0-maxY
+     */
      public FindPath(int maxX, int maxY){
          this.maxX = maxX;
          this.maxY = maxY;
      }
 
 
-    public void updatePaths( Map<Cordinates, Shelf> shelfs){
+    /**
+     * shelfs (additions) need to be updated after every user interaction
+     * @param shelfs list of all existing shelfs
+     */
+    public void updatePaths( Map<Coordinates, Shelf> shelfs){
 
-        //make new paths ( opposite of shelfs)
+        //make new paths (complement of shelfs with respect to 0-maxX and 0-maxY)
         paths.clear();
         for (int x = 0; x <= maxX; x++) {
             for (int y = 0; y <= maxY; y++) {
-                Cordinates position = new Cordinates(x,y);
+                Coordinates position = new Coordinates(x,y);
                 //is shelf
                 if(shelfs.containsKey(position))
                     continue;
@@ -32,14 +47,15 @@ public class FindPath {
             }
         }
 
-        //add neighbour
-        for(Map.Entry<Cordinates, PathNode> entry : paths.entrySet()){
+        //add neighbours for each path
+        for(Map.Entry<Coordinates, PathNode> entry : paths.entrySet()){
             int x = entry.getKey().x;
             int y = entry.getKey().y;
 
+            //check 3x3 space around Node 
             for(int x1=x-1;x1<=x+1;x1++){
                 for(int y1=y-1;y1<=y+1;y1++){
-                    Cordinates seek = new Cordinates(x1,y1);
+                    Coordinates seek = new Coordinates(x1,y1);
                     //out of bounds
                     if (x1 < 0 || x1 > maxX || y1 < 0 || y1 > maxY)
                         continue;
@@ -50,13 +66,20 @@ public class FindPath {
                 }
             }
         }
-
-
+        
     }
 
-    public PathNode aStar(Cordinates start, Cordinates end) {
+    /**
+     * find path form trolley(start) to location next to shelf(end) using A* algorithm
+     * @param start starting coordinates (trolley)
+     * @param end ending coordinates (shelf)
+     * @return Node next to ending location (if path exist)
+     */
+    public PathNode aStar(Coordinates start, Coordinates end) {
         Queue<PathNode> open = new PriorityQueue<>();
         Queue<PathNode> closed = new PriorityQueue<>();
+        if(!paths.containsKey(start))
+            return null;
         PathNode startN = paths.get(start);
         open.add(startN);
         startN.g = .0;

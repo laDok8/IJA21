@@ -1,9 +1,15 @@
+/*
+  Class Storeable
+  @author Ladislav Dokoupil (xdokou14)
+  @author Adrián Bobola (xbobol00)
+ */
+
 package sample;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Storeable extends Cordinates {
+public abstract class Storeable extends Coordinates {
 
     Map<String,Integer> stored = new HashMap<>();
 
@@ -11,6 +17,11 @@ public abstract class Storeable extends Cordinates {
         super(x, y);
     }
 
+    /**
+     *  Adds tuple name-count to stored items list
+     * @param name name of goods to be stored
+     * @param count amounnt of goods to be stored
+     */
     public void add_item(String name, int count) {
         if(count > 0) {
             int storedCount = stored.getOrDefault(name, 0);
@@ -19,17 +30,21 @@ public abstract class Storeable extends Cordinates {
     }
 
 
+    /**
+     * Removes count of good from shelf
+     * @param name name of goods to be removed
+     * @param count amounnt of goods to be removed
+     * @return amount of goods actually removed
+     */
     public int delete_item(String name, int count) {
         int storedCount = stored.getOrDefault(name,0);
         //some items remain in object
-        int recived = 0;
         if(storedCount > count){
             stored.put(name,storedCount-count);
             return count;
         } else {
             stored.remove(name);
-            return count-storedCount;
+            return storedCount;
         }
     }
-
 }
