@@ -20,7 +20,7 @@ public class Trolley extends Storeable {
      * @param cord  trolley coordinates (contains X and Y)
      */
     public Trolley(int id_in, Coordinates cord) {
-        super(cord);
+        super(cord, 0,0,1);
         this.id = id_in;
         this.capacity = 5;
     }

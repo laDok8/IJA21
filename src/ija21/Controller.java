@@ -7,6 +7,7 @@
 package ija21;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 import java.util.*;
 import java.lang.Object;

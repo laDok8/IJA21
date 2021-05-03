@@ -6,10 +6,10 @@
 
 package ija21;
 
-import javafx.scene.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import javax.swing.*;
 import java.util.Objects;
 
 public class Coordinates extends Rectangle {
@@ -42,8 +42,8 @@ public class Coordinates extends Rectangle {
         this.setY(y*scale);
     }
 
-    public Coordinates(Coordinates cord){
-        super(10,10, Color.BLACK);
+    public Coordinates(Coordinates cord, double R, double G, double B){
+        super(10,10, Color.color(R, G, B));
         this.setX((int)cord.getX()*scale);
         this.setY((int)cord.getY()*scale);
     }
