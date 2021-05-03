@@ -11,6 +11,6 @@ public class Shelf extends Storeable{
         super(x,y);
     }
     public Shelf(Coordinates cord){
-        super(cord.x, cord.y);
+        super(cord);
     }
 }

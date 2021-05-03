@@ -6,22 +6,26 @@
 
 package ija21;
 
+import javafx.scene.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
 import java.util.Objects;
 
-public class Coordinates {
-    int x, y;
+public class Coordinates extends Rectangle {
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Coordinates that = (Coordinates) o;
-        return x == that.x && y == that.y;
+        return this.getX() == that.getX() && getY() == that.getY();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return Objects.hash(getX(), getY());
     }
 
     /**
@@ -29,16 +33,27 @@ public class Coordinates {
      * @param x position on horizontal axis
      * @param y position on vertical axis
      */
+
+    int scale = 1;
+
     public Coordinates(int x, int y){
-        this.x = x;
-        this.y = y;
+        super(10,10, Color.BLACK);
+        this.setX(x*scale);
+        this.setY(y*scale);
     }
+
+    public Coordinates(Coordinates cord){
+        super(10,10, Color.BLACK);
+        this.setX((int)cord.getX()*scale);
+        this.setY((int)cord.getY()*scale);
+    }
+
     /**
      * get straight line distance between two cordinates
      * @param cord 2.nd cordinate
      * @return distance of cordinates
      */
     public double getDistance(Coordinates cord){
-        return Math.sqrt(Math.pow(this.x - cord.x,2) + Math.pow(this.y - cord.y,2));
+        return Math.sqrt(Math.pow(this.getX() - cord.getX(),2) + Math.pow(this.getY() - cord.getY(),2));
     }
 }

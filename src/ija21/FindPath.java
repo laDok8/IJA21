@@ -14,6 +14,7 @@ import java.util.Queue;
 public class FindPath {
 
 
+    private int scale = 10;
     private Map<Coordinates, PathNode> paths = new Hashtable<>();
     private int maxX, maxY;
 
@@ -36,8 +37,8 @@ public class FindPath {
 
         //make new paths (complement of shelfs with respect to 0-maxX and 0-maxY)
         paths.clear();
-        for (int x = 0; x <= maxX; x++) {
-            for (int y = 0; y <= maxY; y++) {
+        for (int x = 0; x <= maxX; x+=1*scale) {
+            for (int y = 0; y <= maxY; y+=1*scale) {
                 Coordinates position = new Coordinates(x,y);
                 //is shelf
                 if(shelfs.containsKey(position))
@@ -48,12 +49,12 @@ public class FindPath {
 
         //add neighbours for each path
         for(Map.Entry<Coordinates, PathNode> entry : paths.entrySet()){
-            int x = entry.getKey().x;
-            int y = entry.getKey().y;
+            int x = (int)entry.getKey().getX();
+            int y = (int)entry.getKey().getY();
 
             //check 3x3 space around Node 
-            for(int x1=x-1;x1<=x+1;x1++){
-                for(int y1=y-1;y1<=y+1;y1++){
+            for(int x1=x-scale;x1<=x+scale;x1+=1*scale){
+                for(int y1=y-scale;y1<=y+scale;y1+=1*scale){
                     Coordinates seek = new Coordinates(x1,y1);
                     //out of bounds
                     if (x1 < 0 || x1 > maxX || y1 < 0 || y1 > maxY)
@@ -86,7 +87,7 @@ public class FindPath {
 
         while (!open.isEmpty()) {
             PathNode next = open.peek();
-            if (next == paths.get(end) || next.getSelf().getDistance(end) == 1) {
+            if (next == paths.get(end) || next.getSelf().getDistance(end) == scale) {
                 return next;
             }
 

@@ -9,11 +9,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 
+import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
 public class RequirementsParser {
-    private Map<String, Integer> requirements = new Hashtable<>();
+    private final Map<String, Integer> requirements = new Hashtable<>();
 
     /**
      * Parses requirements json file into local structures requirements
@@ -21,7 +22,46 @@ public class RequirementsParser {
      * @throws Exception no such file found or bad JSON structure
      */
     public RequirementsParser(String filename) throws Exception {
-        JSONArray tmp = (JSONArray) new JSONParser().parse(new FileReader(filename));
+        File requirementsFile = new File(filename); // file for chceck if exists
+        RequirementsParser reqParser = null;
+        JSONArray tmp;
+        if (!requirementsFile.exists()) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("--- Nacitavanie poziadaviek od uzivatela ---");
+            System.out.println("Pre zastavenie nacitavania zadajte znak \"x\" do nazvu/poctu");
+            System.out.println("Pre potvrdenie stlacte enter");
+            System.out.println("-----------------------------------------");
+            StringBuilder stdinRequirements = new StringBuilder("[");
+            int iterator = 1;
+            while (true) {
+                String stop = "x";
+                System.out.println("Zadajte nazov polozky " + iterator + ":");
+                String name = scanner.next();
+                if (name.equals(stop)) {
+                    break;
+                }
+                System.out.println("Zadajte mnozstvo polozky " + iterator + ":");
+                String amount = scanner.next();
+                if (amount.equals(stop)) {
+                    break;
+                }
+                stdinRequirements.append("{");
+                stdinRequirements.append("\"name\": \"");
+                stdinRequirements.append(name);
+                stdinRequirements.append("\", \"amount\": ");
+                stdinRequirements.append(amount);
+                stdinRequirements.append("}");
+                iterator++;
+            }
+            scanner.close();
+            stdinRequirements.append("]");
+
+            tmp = (JSONArray) new JSONParser().parse(filename);
+        }
+        else {
+            tmp = (JSONArray) new JSONParser().parse(new FileReader(filename));
+        }
+
         Iterator itr2 = tmp.iterator();
 
         while (itr2.hasNext()) {

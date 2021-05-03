@@ -16,6 +16,7 @@ public abstract class Storeable extends Coordinates {
     public Storeable(int x, int y) {
         super(x, y);
     }
+    public Storeable(Coordinates cord) { super(cord); }
 
     /**
      *  Adds tuple name-count to stored items list
