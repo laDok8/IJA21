@@ -56,7 +56,7 @@ public class RequirementsParser {
             scanner.close();
             stdinRequirements.append("]");
 
-            tmp = (JSONArray) new JSONParser().parse(filename);
+            tmp = (JSONArray) new JSONParser().parse(String.valueOf(stdinRequirements));
         }
         else {
             tmp = (JSONArray) new JSONParser().parse(new FileReader(filename));
