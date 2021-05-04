@@ -34,7 +34,7 @@ public class Coordinates extends Rectangle {
      * @param y position on vertical axis
      */
 
-    int scale = 1;
+    double scale = 1.0;
 
     public Coordinates(int x, int y){
         super(10,10, Color.BLACK);

@@ -7,20 +7,14 @@ package ija21;
 
 import java.util.*;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.scene.shape.Rectangle;
-import java.io.File;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.DoubleToIntFunction;
 
 /*
 public class putItems{
@@ -59,7 +53,8 @@ public class putItems{
 
 
 public class Main extends Application {
-
+    int mapSpeed = 10;
+    int mapZoom = 100;
     Pane root;
     Scene scene;
     Controller controller;
@@ -68,11 +63,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         root = new Pane();
-        primaryStage.setTitle("Hello World!");
-        scene = new Scene(root,300,300);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
+        primaryStage.setTitle("IJA 2020/21 - Projekt");
 
         //load shelfs
         JsonParser jsonParser = null;
@@ -85,21 +76,25 @@ public class Main extends Application {
         final int maxX = jsonParser.getMaxX();
         final int maxY = jsonParser.getMaxY();
 
-
         RequirementsParser reqParser = requirementsProcessing();
         controller = new Controller(root,jsonParser,reqParser.getRequirements());
-        controller.start();
 
-        //root.getChildren().add()
+        //windows params
+        int windowWidth = 768;
+        int windowLength = 1366;
+
+        addButtons(windowWidth - 40, windowLength, primaryStage);
+        scene = new Scene(root,windowLength,windowWidth);
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
     }
 
     public static RequirementsParser requirementsProcessing(){
         // ------------------------ REQUIREMENTS PARSER --------------------------
         RequirementsParser reqParser = null;
-        String filename = "data/requirements.json";
         try{
-            reqParser = new RequirementsParser(filename);
+            reqParser = new RequirementsParser("data/requirements.json");
             }
         catch (Exception e) {
             System.err.println("Chyba zadanych poziadaviek");
@@ -113,6 +108,120 @@ public class Main extends Application {
         // ------------------------ END REQUIREMENTS PARSER --------------------------
         return reqParser;
     }
+
+    public void addButtons(int ySur, int xSur, Stage primaryStage){
+        //show actual MapSpeed
+        Button buttonDisplaySpeed = new Button(Integer.toString(mapSpeed));
+        buttonDisplaySpeed.setStyle("-fx-border-color: #000200; -fx-border-width: 1px;");
+        buttonDisplaySpeed.setLayoutX(60);
+        buttonDisplaySpeed.setLayoutY(ySur);
+        root.getChildren().add(buttonDisplaySpeed);
+        buttonDisplaySpeed.setOnAction(event1 -> {
+            mapSpeed = 10;
+            buttonDisplaySpeed.setText(Integer.toString(mapSpeed));
+        });
+
+        //Speed++ button
+        Button buttonSpeedInc = new Button("+ Speed");
+        buttonSpeedInc.setStyle("-fx-border-color: #8DC53F; -fx-border-width: 1px;");
+        buttonSpeedInc.setLayoutX(92);
+        buttonSpeedInc.setLayoutY(ySur);
+        buttonSpeedInc.setOnAction(event1 -> {
+            if (mapSpeed < 19){
+                mapSpeed+= 2;
+                buttonDisplaySpeed.setText(Integer.toString(mapSpeed));
+            }
+        });
+        root.getChildren().add(buttonSpeedInc);
+
+        //Speed-- button
+        Button buttonSpeedDec = new Button("- Speed");
+        buttonSpeedDec.setStyle("-fx-border-color: #FE2D2D; -fx-border-width: 1px;");
+        buttonSpeedDec.setLayoutX(0);
+        buttonSpeedDec.setLayoutY(ySur);
+        buttonSpeedDec.setOnAction(event1 -> {
+            if (mapSpeed > 2){ //delenie nulou
+                mapSpeed-= 2;
+                buttonDisplaySpeed.setText(Integer.toString(mapSpeed));
+            } else {
+                mapSpeed = 1;
+                buttonDisplaySpeed.setText(Integer.toString(mapSpeed));
+            }
+        });
+        root.getChildren().add(buttonSpeedDec);
+
+        //Play button
+        Button buttonPlay = new Button("Play");
+        buttonPlay.setStyle("-fx-border-color: #3BB83E; -fx-border-width: 5px;");
+        buttonPlay.setLayoutX(200);
+        buttonPlay.setLayoutY(ySur);
+        buttonPlay.setOnAction(event1 -> {
+            controller.start(mapSpeed);
+        });
+        root.getChildren().add(buttonPlay);
+
+        //Reset button
+        Button buttonReset = new Button("RESET");
+        buttonReset.setStyle("-fx-border-color: #1E5D1F; -fx-border-width: 5px;");
+        buttonReset.setLayoutX(250);
+        buttonReset.setLayoutY(ySur);
+        buttonReset.setOnAction(event1 -> {
+            controller.stop();
+            start(primaryStage);
+        });
+        root.getChildren().add(buttonReset);
+
+        //STOP button
+        Button buttonStop = new Button("STOP");
+        buttonStop.setStyle("-fx-border-color: #FE2D2D; -fx-border-width: 5px;");
+        buttonStop.setLayoutX(310);
+        buttonStop.setLayoutY(ySur);
+        buttonStop.setOnAction(event1 -> {
+            Stage stage = (Stage) buttonStop.getScene().getWindow();
+            controller.stop();
+            System.out.println("Aplikacia ukoncena uzivatelom");
+            System.exit(0);
+        });
+        root.getChildren().add(buttonStop);
+
+        //show actual ZOOM
+        Button buttonDisplayZOOM = new Button(Integer.toString(mapZoom) + "%");
+        buttonDisplayZOOM.setStyle("-fx-border-color: #000200; -fx-border-width: 1px;");
+        buttonDisplayZOOM.setLayoutX(xSur - 120);
+        buttonDisplayZOOM.setLayoutY(ySur);
+        root.getChildren().add(buttonDisplayZOOM);
+        buttonDisplayZOOM.setOnAction(event1 -> {
+            mapZoom = 100;
+            buttonDisplayZOOM.setText(Integer.toString(mapZoom) + "%");
+        });
+
+        //ZOOM+ button
+        Button buttonZoomInc = new Button("+ZOOM");
+        buttonZoomInc.setStyle("-fx-border-color: #0037FE; -fx-border-width: 1px;");
+        buttonZoomInc.setLayoutX(xSur - 70);
+        buttonZoomInc.setLayoutY(ySur);
+        buttonZoomInc.setOnAction(event1 -> {
+            if (mapZoom < 300){
+                mapZoom+= 20;
+                buttonDisplayZOOM.setText(Integer.toString(mapZoom) + "%");
+            }
+        });
+        root.getChildren().add(buttonZoomInc);
+
+        //ZOOM- button
+        Button buttonZoomDec = new Button("-ZOOM");
+        buttonZoomDec.setStyle("-fx-border-color: #7F9AFE; -fx-border-width: 1px;");
+        buttonZoomDec.setLayoutX(xSur - 180);
+        buttonZoomDec.setLayoutY(ySur);
+        buttonZoomDec.setOnAction(event1 -> {
+            if (mapZoom > 20){
+                mapZoom-= 20;
+                buttonDisplayZOOM.setText(Integer.toString(mapZoom) + "%");
+            }
+        });
+        root.getChildren().add(buttonZoomDec);
+    }
+
     /*public static void putTrolleyToMap(float x, float y) {
         Rectangle trolleyRectangle = new Rectangle();
         trolleyRectangle.setX(x*10);

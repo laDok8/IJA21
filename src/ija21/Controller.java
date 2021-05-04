@@ -29,12 +29,12 @@ public class Controller {
         this.maxY = jsonParser.getMaxY();
     }
 
-    public void start(){
+    public void start(int mapSpeed) {
         //add shelfs/trolleys from file
-        for (Shelf sh: jsonParser.getAllShelfs().values() ) {
+        for (Shelf sh : jsonParser.getAllShelfs().values()) {
             root.getChildren().add(sh);
         }
-        for (Trolley tr: jsonParser.getTrolleys()) {
+        for (Trolley tr : jsonParser.getTrolleys()) {
             root.getChildren().add(tr);
         }
         //initalize pathifinding structure
@@ -44,16 +44,13 @@ public class Controller {
         findPath.updatePaths(jsonParser.getAllShelfs());
 
 
-
-
-
-
         Timer timer = new Timer(false);
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 //TODO game loop
                 System.out.println("fromTimer\n");
+                System.out.println("MapSpeed: "+ mapSpeed);
 
                 //set refreshing speed
                 try {
@@ -96,7 +93,7 @@ public class Controller {
                     }
                     //min distance Cordinates value
                     Coordinates lowestDisanceCord = sortedByDistances.firstEntry().getValue();
-                    Coordinates curentCoordinates = new Coordinates((int)trolley.getX(),(int)trolley.getY());
+                    Coordinates curentCoordinates = new Coordinates((int) trolley.getX(), (int) trolley.getY());
                     PathNode vysl2 = findPath.aStar(curentCoordinates, lowestDisanceCord);
 
                     //no path to this required item
@@ -133,8 +130,11 @@ public class Controller {
                     }
                 }
 
-                }
-        },1000,1000/10);
+            }
+        }, 0, 1000 / mapSpeed);
     }
-
+    //todo: Zastavit void start(int mapSpeed)
+    public int stop() {
+        return(0);
+    }
 }
