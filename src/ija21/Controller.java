@@ -40,16 +40,21 @@ public class Controller {
         //remove old objects
         root.getChildren().removeAll(jsonParser.getAllShelfs().values());
         root.getChildren().removeAll(jsonParser.getTrolleys());
+        root.getChildren().removeAll(jsonParser.getObstacle());
 
-        //add shelfs/trolleys from file
+
+        //add shelfs/obstacles/trolleys from file
         root.getChildren().addAll(jsonParser.getAllShelfs().values());
         root.getChildren().addAll(jsonParser.getTrolleys());
+        root.getChildren().addAll(jsonParser.getObstacle());
 
         //add staging areas for esthetic reasons
         root.getChildren().addAll(jsonParser.getStages());
 
         //update every time shelfs are changed
         findPath.updatePaths(jsonParser.getAllShelfs());
+
+
 
         timer.scheduleAtFixedRate(mainLoop, 0, 10000 / mapSpeed);
     }

@@ -76,7 +76,7 @@ public class Main extends Application {
         }
         final int maxX = jsonParser.getMaxX();
         final int maxY = jsonParser.getMaxY();
-
+        
         RequirementsParser reqParser = requirementsProcessing();
         controller = new Controller(root,jsonParser,reqParser.getRequirements(), blockWidth.SCALE);
 
