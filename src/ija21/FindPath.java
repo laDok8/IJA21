@@ -6,10 +6,7 @@
 
 package ija21;
 
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class FindPath {
 
@@ -76,7 +73,7 @@ public class FindPath {
      * @param end ending coordinates (shelf)
      * @return Node next to ending location (if path exist)
      */
-    public PathNode aStar(Coordinates start, Coordinates end) {
+    public List<Coordinates> aStar(Coordinates start, Coordinates end) {
         Queue<PathNode> open = new PriorityQueue<>();
         Queue<PathNode> closed = new PriorityQueue<>();
         if(!paths.containsKey(start))
@@ -89,7 +86,15 @@ public class FindPath {
         while (!open.isEmpty()) {
             PathNode next = open.peek();
             if (next == paths.get(end) || next.getSelf().getDistance(end) == scale) {
-                return next;
+                //return path in form of list [0]=source [last]=destination
+                ArrayList<Coordinates> cordList = new ArrayList<>();
+                PathNode tmpCord = next;
+                while (!tmpCord.getSelf().equals(start)) {
+                    cordList.add(0,tmpCord.getSelf());
+                    tmpCord = tmpCord.getParent();
+                }
+                return cordList;
+
             }
 
             for(PathNode node : next.neighbours){

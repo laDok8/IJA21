@@ -79,7 +79,7 @@ public class JsonParser {
             Map entry = ((Map) iterator.next());
             int x = ((Long) entry.get("x")).intValue() * scale;
             int y = ((Long) entry.get("y")).intValue() * scale;
-            Coordinates co = new Coordinates(x, y);
+            Coordinates co = new Coordinates(x, y,.6,.6,.6);
             stagingObjects.add(co);
         }
     }

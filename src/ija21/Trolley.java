@@ -6,13 +6,16 @@
 
 package ija21;
 
+import java.util.List;
 import java.util.Map;
 
 public class Trolley extends Storeable {
     private final int id;
-    private final int capacity;
+    private static final int capacity = 5;
+    public boolean unload;
 
     public Map.Entry<String, Integer> task;
+    public List<Coordinates> pathList;
 
     /**
      * Save trolley data into local structures task
@@ -22,7 +25,7 @@ public class Trolley extends Storeable {
     public Trolley(int id_in, Coordinates cord) {
         super(cord, 0,0,1);
         this.id = id_in;
-        this.capacity = 5;
+        unload = false;
     }
 
     /**
@@ -38,14 +41,27 @@ public class Trolley extends Storeable {
      * @return amount of items
      */
     public int getItemInCount() {
-        return this.getStored().size();
+        int sum = 0;
+        for (int count : this.getStored().values() ) {
+            sum+=count;
+        }
+        return sum;
     }
+
+    public void unloadGoods(){
+        for (Map.Entry<String, Integer> item: this.getStored().entrySet()) {
+            this.delete_item(item.getKey(),item.getValue());
+        }
+        this.unload = false;
+    }
+
 
     /**
      * get trolley capacity
      * @return trolley capacity
      */
-    public int getCapacity() {
-        return this.capacity;
+    public static int getCapacity() {
+        return capacity;
     }
+
 }

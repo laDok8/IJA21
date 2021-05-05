@@ -8,7 +8,10 @@ package ija21;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.event.EventHandler;
@@ -60,6 +63,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         root = new Pane();
+        root.setStyle("-fx-background-color: darkgrey;");
         primaryStage.setTitle("IJA 2020/21 - Projekt");
 
         //load shelfs

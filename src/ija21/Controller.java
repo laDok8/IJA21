@@ -37,7 +37,6 @@ public class Controller {
     }
 
     public void start(int mapSpeed) {
-        System.out.println(mapSpeed);
         //remove old objects
         root.getChildren().removeAll(jsonParser.getAllShelfs().values());
         root.getChildren().removeAll(jsonParser.getTrolleys());
@@ -45,6 +44,9 @@ public class Controller {
         //add shelfs/trolleys from file
         root.getChildren().addAll(jsonParser.getAllShelfs().values());
         root.getChildren().addAll(jsonParser.getTrolleys());
+
+        //add staging areas for esthetic reasons
+        root.getChildren().addAll(jsonParser.getStages());
 
         //update every time shelfs are changed
         findPath.updatePaths(jsonParser.getAllShelfs());
