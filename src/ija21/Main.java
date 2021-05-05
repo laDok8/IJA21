@@ -121,8 +121,8 @@ public class Main extends Application {
     public void addButtons(int ySur, int xSur, Stage primaryStage){
         //show actual MapSpeed
         Button buttonDisplaySpeed = new Button(Integer.toString(mapSpeed));
-        buttonDisplaySpeed.setStyle("-fx-border-color: #000200; -fx-border-width: 1px;");
-        buttonDisplaySpeed.setLayoutX(60);
+        buttonDisplaySpeed.setStyle("-fx-border-color: #000200; -fx-border-width: 5px;");
+        buttonDisplaySpeed.setLayoutX(70);
         buttonDisplaySpeed.setLayoutY(ySur);
         root.getChildren().add(buttonDisplaySpeed);
         buttonDisplaySpeed.setOnAction(event1 -> {
@@ -132,8 +132,8 @@ public class Main extends Application {
 
         //Speed++ button
         Button buttonSpeedInc = new Button("+ Speed");
-        buttonSpeedInc.setStyle("-fx-border-color: #8DC53F; -fx-border-width: 1px;");
-        buttonSpeedInc.setLayoutX(105);
+        buttonSpeedInc.setStyle("-fx-border-color: #8DC53F; -fx-border-width: 5px;");
+        buttonSpeedInc.setLayoutX(120);
         buttonSpeedInc.setLayoutY(ySur);
         buttonSpeedInc.setOnAction(event1 -> {
             if (mapSpeed == 1) {
@@ -169,7 +169,7 @@ public class Main extends Application {
 
         //Speed-- button
         Button buttonSpeedDec = new Button("- Speed");
-        buttonSpeedDec.setStyle("-fx-border-color: #FE2D2D; -fx-border-width: 1px;");
+        buttonSpeedDec.setStyle("-fx-border-color: #1E5D1F; -fx-border-width: 5px;");
         buttonSpeedDec.setLayoutX(0);
         buttonSpeedDec.setLayoutY(ySur);
         buttonSpeedDec.setOnAction(event1 -> {
@@ -225,7 +225,7 @@ public class Main extends Application {
 
         //show actual ZOOM
         Button buttonDisplayZOOM = new Button(Double.toString(mapZOOM));
-        buttonDisplayZOOM.setStyle("-fx-border-color: #000200; -fx-border-width: 1px;");
+        buttonDisplayZOOM.setStyle("-fx-border-color: #000200; -fx-border-width: 5px;");
         buttonDisplayZOOM.setLayoutX(xSur - 110);
         buttonDisplayZOOM.setLayoutY(ySur);
         root.getChildren().add(buttonDisplayZOOM);
@@ -236,7 +236,7 @@ public class Main extends Application {
 
         //ZOOM+ button
         Button buttonZoomInc = new Button("+ZOOM");
-        buttonZoomInc.setStyle("-fx-border-color: #0037FE; -fx-border-width: 1px;");
+        buttonZoomInc.setStyle("-fx-border-color: #0037FE; -fx-border-width: 5px;");
         buttonZoomInc.setLayoutX(xSur - 70);
         buttonZoomInc.setLayoutY(ySur);
         buttonZoomInc.setOnAction(event1 -> {
@@ -262,7 +262,7 @@ public class Main extends Application {
 
         //ZOOM- button
         Button buttonZoomDec = new Button("-ZOOM");
-        buttonZoomDec.setStyle("-fx-border-color: #7F9AFE; -fx-border-width: 1px;");
+        buttonZoomDec.setStyle("-fx-border-color: #7F9AFE; -fx-border-width: 5px;");
         buttonZoomDec.setLayoutX(xSur - 180);
         buttonZoomDec.setLayoutY(ySur);
         buttonZoomDec.setOnAction(event1 -> {

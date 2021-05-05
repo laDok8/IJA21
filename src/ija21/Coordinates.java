@@ -41,7 +41,7 @@ public class Coordinates extends Rectangle {
         this.setY(y);
     }
     public Coordinates(int x, int y, double R, double G, double B){
-        super(10,10, Color.color(R, G, B));
+        super(blockWidth.SCALE,blockWidth.SCALE, Color.color(R, G, B));
         this.setStroke(Color.BLACK);
         this.setX(x);
         this.setY(y);
