@@ -15,7 +15,6 @@ import java.util.Objects;
 
 public class Coordinates extends Rectangle {
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -36,14 +35,14 @@ public class Coordinates extends Rectangle {
      */
 
     public Coordinates(int x, int y){
-        super(10,10, Color.BLACK);
+        super(blockWidth.SCALE,blockWidth.SCALE, Color.BLACK);
         this.setStroke(Color.BLACK);
         this.setX(x);
         this.setY(y);
     }
 
     public Coordinates(Coordinates cord, double R, double G, double B){
-        super(10,10, Color.color(R, G, B));
+        super(blockWidth.SCALE,blockWidth.SCALE, Color.color(R, G, B));
         this.setStroke(Color.BLACK);
         this.setX((int)cord.getX());
         this.setY((int)cord.getY());

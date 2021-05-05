@@ -37,6 +37,7 @@ public class Controller {
     }
 
     public void start(int mapSpeed) {
+        System.out.println(mapSpeed);
         //remove old objects
         root.getChildren().removeAll(jsonParser.getAllShelfs().values());
         root.getChildren().removeAll(jsonParser.getTrolleys());
@@ -50,7 +51,7 @@ public class Controller {
 
         timer.scheduleAtFixedRate(mainLoop, 0, 10000 / mapSpeed);
     }
-    //todo: Zastavit void start(int mapSpeed)
+
     public void stop() {
         timer.cancel();
         /*timer.cancel();
@@ -61,11 +62,13 @@ public class Controller {
             e.printStackTrace();
         }
         timer.scheduleAtFixedRate(mainLoop,0,1000 / mapSpeed);*/
-        play();
+        //play();
     }
-    public void play() {
+    public void play(int mapSpeed) {
         findPath.updatePaths(jsonParser.getAllShelfs());
-        timer.scheduleAtFixedRate(mainLoop, 0, 1000);
+        mainLoop = new MainLoop(jsonParser,requirements,findPath,scale);
+        timer = new Timer(false);
+        timer.scheduleAtFixedRate(mainLoop, 0, 10000 / mapSpeed);
     }
 
 }
