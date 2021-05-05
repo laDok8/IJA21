@@ -30,28 +30,35 @@ public class JsonParser {
      * @param filename file path
      * @throws Exception no such file found or bad JSON structure
      */
-    public JsonParser(String filename) throws Exception {
+    public JsonParser(String filename, int scale) throws Exception {
         //praparing json file
         JSONObject obj = (JSONObject) new JSONParser().parse(new FileReader(filename));
         JSONArray content = (JSONArray) obj.getOrDefault("content", new JSONArray());
         JSONArray trolley = (JSONArray) obj.getOrDefault("trolley", new JSONArray());
         JSONArray staging = (JSONArray) obj.getOrDefault("staging", new JSONArray());
 
-        maxX = ((Long) obj.get("maxX")).intValue();
-        maxY = ((Long) obj.get("maxY")).intValue();
+        maxX = ((Long) obj.get("maxX")).intValue() * scale;
+        maxY = ((Long) obj.get("maxY")).intValue() * scale;
 
         // iterating gooods
         Iterator iterator = content.iterator();
         while (iterator.hasNext()) {
             Map entry = ((Map) iterator.next());
-            int x = ((Long) entry.get("x")).intValue();
-            int y = ((Long) entry.get("y")).intValue();
+            int x = ((Long) entry.get("x")).intValue() * scale;
+            int y = ((Long) entry.get("y")).intValue() * scale;
             Coordinates co = new Coordinates(x, y);
-            String name = entry.get("name").toString();
-            int amount = ((Long) entry.get("amount")).intValue();
             Shelf tmp = storedObjects.getOrDefault(co, new Shelf(co));
-            tmp.add_item(name, amount);
+            try {
+                String name = entry.get("name").toString();
+                int amount = ((Long) entry.get("amount")).intValue();
+                tmp.add_item(name, amount);
+            }catch (Exception ignored){
+                //no name-value found
+            }
             storedObjects.put(co, tmp);
+
+
+
         }
 
         //iterating trolleys
@@ -59,8 +66,8 @@ public class JsonParser {
         while (iterator.hasNext()) {
             Map entry = ((Map) iterator.next());
             int id = ((Long) entry.get("id")).intValue();
-            int x = ((Long) entry.get("x")).intValue();
-            int y = ((Long) entry.get("y")).intValue();
+            int x = ((Long) entry.get("x")).intValue() * scale;
+            int y = ((Long) entry.get("y")).intValue() * scale;
             Coordinates co = new Coordinates(x, y);
             Trolley ntrolley = new Trolley(id,co);
             trolleyObjects.add(ntrolley);
@@ -70,8 +77,8 @@ public class JsonParser {
         iterator = staging.iterator();
         while (iterator.hasNext()) {
             Map entry = ((Map) iterator.next());
-            int x = ((Long) entry.get("x")).intValue();
-            int y = ((Long) entry.get("y")).intValue();
+            int x = ((Long) entry.get("x")).intValue() * scale;
+            int y = ((Long) entry.get("y")).intValue() * scale;
             Coordinates co = new Coordinates(x, y);
             stagingObjects.add(co);
         }

@@ -7,6 +7,7 @@
 package ija21;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import javax.swing.*;
@@ -34,18 +35,18 @@ public class Coordinates extends Rectangle {
      * @param y position on vertical axis
      */
 
-    double scale = 1.0;
-
     public Coordinates(int x, int y){
         super(10,10, Color.BLACK);
-        this.setX(x*scale);
-        this.setY(y*scale);
+        this.setStroke(Color.BLACK);
+        this.setX(x);
+        this.setY(y);
     }
 
     public Coordinates(Coordinates cord, double R, double G, double B){
         super(10,10, Color.color(R, G, B));
-        this.setX((int)cord.getX()*scale);
-        this.setY((int)cord.getY()*scale);
+        this.setStroke(Color.BLACK);
+        this.setX((int)cord.getX());
+        this.setY((int)cord.getY());
     }
 
     /**

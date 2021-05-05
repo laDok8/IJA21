@@ -5,16 +5,11 @@
 
 package ija21;
 
-import java.util.*;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.DoubleToIntFunction;
 
 /*
 public class putItems{
@@ -51,14 +46,13 @@ public class putItems{
 
 */
 
-
 public class Main extends Application {
     int mapSpeed = 10;
     int mapZoom = 100;
+    final int SCALE = 15;
     Pane root;
     Scene scene;
     Controller controller;
-    Map<Coordinates, Shelf> shelfs;
 
     @Override
     public void start(Stage primaryStage) {
@@ -68,7 +62,7 @@ public class Main extends Application {
         //load shelfs
         JsonParser jsonParser = null;
         try {
-            jsonParser = new JsonParser("data/sample.json");
+            jsonParser = new JsonParser("data/sample.json", SCALE);
         } catch (Exception e) {
             System.err.println("chyba parser: sample.json");
             System.exit(1);
@@ -77,7 +71,7 @@ public class Main extends Application {
         final int maxY = jsonParser.getMaxY();
 
         RequirementsParser reqParser = requirementsProcessing();
-        controller = new Controller(root,jsonParser,reqParser.getRequirements());
+        controller = new Controller(root,jsonParser,reqParser.getRequirements(), SCALE);
 
         //windows params
         int windowWidth = 768;
@@ -87,7 +81,6 @@ public class Main extends Application {
         scene = new Scene(root,windowLength,windowWidth);
         primaryStage.setScene(scene);
         primaryStage.show();
-
     }
 
     public static RequirementsParser requirementsProcessing(){

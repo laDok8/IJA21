@@ -14,7 +14,7 @@ import java.util.Queue;
 public class FindPath {
 
 
-    private int scale = 10;
+    private int scale;
     private Map<Coordinates, PathNode> paths = new Hashtable<>();
     private int maxX, maxY;
 
@@ -23,9 +23,10 @@ public class FindPath {
      * @param maxX horizontal limit 0-maxX
      * @param maxY vertical limit 0-maxY
      */
-     public FindPath(int maxX, int maxY){
+     public FindPath(int maxX, int maxY,int scale){
          this.maxX = maxX;
          this.maxY = maxY;
+         this.scale = scale;
      }
 
 
