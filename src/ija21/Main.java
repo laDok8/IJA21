@@ -130,6 +130,25 @@ public class Main extends Application {
             buttonDisplaySpeed.setText(Integer.toString(mapSpeed));
         });
 
+        //PAUSE button
+        Button buttonPause = new Button("PAUSE");
+        buttonPause.setStyle("-fx-border-color: #1E5D1F; -fx-border-width: 5px;");
+        buttonPause.setLayoutX(260);
+        buttonPause.setLayoutY(ySur);
+        buttonPause.setOnAction(event1 -> {
+            if (!pausedScene && scenePlaying) {
+                controller.stop();
+                pausedScene = true;
+                System.out.println("PAUSE");
+                buttonPause.setText("RESUME");
+            } else if (pausedScene){
+                System.out.println("STOP PAUSE");
+                buttonPause.setText("PAUSE");
+                controller.play(mapSpeed);
+                pausedScene = false;
+            }
+        });
+
         //Speed++ button
         Button buttonSpeedInc = new Button("+ Speed");
         buttonSpeedInc.setStyle("-fx-border-color: #8DC53F; -fx-border-width: 5px;");
@@ -163,6 +182,14 @@ public class Main extends Application {
             } else if (mapSpeed == 750) {
                 mapSpeed = 1000;
                 buttonDisplaySpeed.setText(Integer.toString(mapSpeed));
+            }
+            if (!pausedScene && scenePlaying) {
+                controller.stop();
+                pausedScene = true;
+                System.out.println("PAUSE");
+                buttonPause.setText("RESUME");
+                root.getChildren().remove(buttonPause);
+                root.getChildren().add(buttonPause);
             }
         });
         root.getChildren().add(buttonSpeedInc);
@@ -201,27 +228,16 @@ public class Main extends Application {
                 mapSpeed = 1;
                 buttonDisplaySpeed.setText(Integer.toString(mapSpeed));
             }
-        });
-        root.getChildren().add(buttonSpeedDec);
-
-        //PAUSE button
-        Button buttonPause = new Button("PAUSE");
-        buttonPause.setStyle("-fx-border-color: #1E5D1F; -fx-border-width: 5px;");
-        buttonPause.setLayoutX(260);
-        buttonPause.setLayoutY(ySur);
-        buttonPause.setOnAction(event1 -> {
             if (!pausedScene && scenePlaying) {
                 controller.stop();
                 pausedScene = true;
                 System.out.println("PAUSE");
                 buttonPause.setText("RESUME");
-            } else if (pausedScene){
-                System.out.println("STOP PAUSE");
-                buttonPause.setText("PAUSE");
-                controller.play(mapSpeed);
-                pausedScene = false;
+                root.getChildren().remove(buttonPause);
+                root.getChildren().add(buttonPause);
             }
         });
+        root.getChildren().add(buttonSpeedDec);
 
         //show actual ZOOM
         Button buttonDisplayZOOM = new Button(Double.toString(mapZOOM));
