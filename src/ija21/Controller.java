@@ -33,7 +33,7 @@ public class Controller {
         //initalize pathfinding structure
         findPath = new FindPath(maxX, maxY, scale);
         timer = new Timer(false);
-        mainLoop = new MainLoop(jsonParser,requirements,findPath,scale);
+        mainLoop = new MainLoop(jsonParser,requirements,findPath);
     }
 
     public void start(int mapSpeed) {
@@ -68,7 +68,7 @@ public class Controller {
     }
     public void play(int mapSpeed) {
         findPath.updatePaths(jsonParser.getAllShelfs());
-        mainLoop = new MainLoop(jsonParser,requirements,findPath,scale);
+        mainLoop = new MainLoop(jsonParser,requirements,findPath);
         timer = new Timer(false);
         timer.scheduleAtFixedRate(mainLoop, 0, 10000 / mapSpeed);
     }
