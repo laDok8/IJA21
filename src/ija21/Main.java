@@ -45,8 +45,8 @@ public class Main extends Application {
         controller = new Controller(root, jsonParser, reqParser, blockWidth.SCALE);
 
         // scene window params
-        int windowWidth = 768;
-        int windowLength = 1366;
+        int windowWidth = 800;
+        int windowLength = 1400;
         addButtons(windowWidth - 40, windowLength, primaryStage);
         scene = new Scene(root, windowLength, windowWidth);
         primaryStage.setScene(scene);
