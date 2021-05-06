@@ -4,7 +4,7 @@
     <property name="library" location="lib"/>
     <property name="doc" location="doc"/>
     <property name="dest" location="dest"/>
-    <property name="jar" value="IJA21.jar"/>
+    <property name="jar" value="ija-app.jar"/>
     <path id="class.path">
         <fileset dir="${library}">
             <include name="**/*.jar"/>

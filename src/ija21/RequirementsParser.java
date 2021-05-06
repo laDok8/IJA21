@@ -3,11 +3,11 @@
   @author Ladislav Dokoupil (xdokou14)
   @author Adrián Bobola (xbobol00)
  */
+
 package ija21;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
-
 
 import java.io.File;
 import java.io.FileReader;
@@ -18,29 +18,29 @@ public class RequirementsParser {
 
     /**
      * Parses requirements json file into local structures requirements
+     * Parser is trying to get all requirements from file "/data/requirements.json". If file is missing, it loads requirements from user input
      * @param filename file path
      * @throws Exception no such file found or bad JSON structure
      */
     public RequirementsParser(String filename) throws Exception {
-        File requirementsFile = new File(filename); // file for chceck if exists
+        File requirementsFile = new File(filename); // file for check if exists
         RequirementsParser reqParser = null;
         JSONArray tmp;
         if (!requirementsFile.exists()) {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("--- Nacitavanie poziadaviek od uzivatela ---");
-            System.out.println("Pre zastavenie nacitavania zadajte znak \"x\" do nazvu/poctu");
-            System.out.println("Pre potvrdenie stlacte enter");
+            System.out.println("--------------- Loading requests from the user ------------------------");
+            System.out.println("To stop input, press the enter key");
             System.out.println("-----------------------------------------");
             StringBuilder stdinRequirements = new StringBuilder("[");
             int iterator = 1;
             while (true) {
-                System.out.println("Zadajte nazov polozky " + iterator + ":");
+                System.out.println("Enter an item name " + iterator + ":");
                 String name = scanner.nextLine();
                 //stop if empty line
                 if (name == null || name.equals("")) {
                     break;
                 }
-                System.out.println("Zadajte mnozstvo polozky " + iterator + ":");
+                System.out.println("Enter an item count " + iterator + ":");
                 String amount = scanner.nextLine();
                 //stop if empty line
                 if (amount == null || amount.equals("")) {
@@ -58,21 +58,22 @@ public class RequirementsParser {
             stdinRequirements.append("]");
 
             tmp = (JSONArray) new JSONParser().parse(String.valueOf(stdinRequirements));
-        }
-        else {
+        } else {
             tmp = (JSONArray) new JSONParser().parse(new FileReader(filename));
         }
 
-        Iterator itr2 = tmp.iterator();
-
-        while (itr2.hasNext()) {
-            Map itr1 = ((Map) itr2.next());
+        for (Object o : tmp) {
+            Map itr1 = ((Map) o);
             String name = itr1.get("name").toString();
             int amount = Integer.parseInt(itr1.get("amount").toString());
             requirements.put(name, amount);
         }
     }
 
+    /**
+     * Get all parsed requirements
+     * @return parsed requirements
+     */
     public Map<String, Integer> getRequirements() {
         return requirements;
     }
