@@ -17,6 +17,7 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Trolley extends Storeable {
     private final int id;
@@ -25,6 +26,7 @@ public class Trolley extends Storeable {
 
     public Map.Entry<String, Integer> task;
     public List<Coordinates> pathList;
+    public Coordinates location;
 
     /**
      * Save trolley data into local structures task
@@ -97,4 +99,18 @@ public class Trolley extends Storeable {
         return capacity-this.getItemInCount();
     }
 
+
+   /* @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Trolley trolley = (Trolley) o;
+        return id == trolley.id && location.equals(trolley.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, location);
+    }*/
 }

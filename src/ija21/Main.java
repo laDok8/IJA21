@@ -19,41 +19,6 @@ import javafx.event.EventHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-public class putItems{
-    public float x;
-    public float y;
-    public int id;
-
-    public putItems(int idIn, float xIn, float yIn){
-        this.id = idIn;
-        this.x = xIn;
-        this.y = yIn;
-    }
-
-    void putTrolleyToMap() {
-        Rectangle trolleyRectangle = new Rectangle();
-        trolleyRectangle.setX(this.x*10);
-        trolleyRectangle.setY(this.y*10);
-        trolleyRectangle.setWidth(10.0f);
-        trolleyRectangle.setHeight(10.0f);
-        trolleyRectangle.setFill(Color.DARKBLUE);
-        root.getChildren().add(trolleyRectangle);
-    }
-
-    void putShelvesToMap() {
-        Rectangle shelfRectangle = new Rectangle();
-        shelfRectangle.setX(this.x*10);
-        shelfRectangle.setY(this.y*10);
-        shelfRectangle.setWidth(10.0f);
-        shelfRectangle.setHeight(10.0f);
-        shelfRectangle.setFill(Color.YELLOW);
-        root.getChildren().add(shelfRectangle);
-    }
-}
-
-*/
-
 public class Main extends Application {
     int mapSpeed = 100;
     double mapZOOM = 1.0;
@@ -95,11 +60,10 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // Scene window is closed
+        // Scenes window is closed
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 primaryStage.close();
-                System.out.println("Graficke okno aplikacie zatvorene uzivatelom");
                 System.exit(0);
             }
         });
@@ -148,7 +112,6 @@ public class Main extends Application {
                 System.out.println("PAUSE");
                 buttonPause.setText("RESUME");
             } else if (pausedScene){
-                System.out.println("STOP PAUSE");
                 buttonPause.setText("PAUSE");
                 controller.play(mapSpeed);
                 pausedScene = false;
@@ -351,7 +314,6 @@ public class Main extends Application {
         buttonExit.setLayoutX(450);
         buttonExit.setLayoutY(ySur);
         buttonExit.setOnAction(event1 -> {
-            System.out.println("Tlacitko EXIT: Aplikacia ukoncena uzivatelom");
             System.exit(0);
         });
         root.getChildren().add(buttonExit);

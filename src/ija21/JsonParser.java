@@ -88,6 +88,40 @@ public class JsonParser {
             }
         }
 
+        /*
+        //CONTENT generator
+        int maxX = 20;
+        int maxY = 15;
+        System.out.println("CONTENT");
+        boolean doing = true;
+        for (int x = 0; x < maxX; x++) {
+            if (x % 2 == 0) {
+                doing = !doing;
+            }
+            if (!doing) {
+                continue;
+            }
+            for (int y = 1; y < maxY; y++) {
+                if (6 < y && y < 10) {
+                    continue;
+                }
+                System.out.println("{");
+                System.out.println("\"x\": " + x + ",");
+                System.out.println("\"y\": " + y + "");
+                System.out.println("},");
+            }
+        }
+        System.out.println("STAGE");
+        // STAGE GENERATOR
+        for (int x = 0; x < maxX; x++) {
+            for (int y = 19; y < 20; y++) {
+                System.out.println("{");
+                System.out.println("\"x\": " + x + ",");
+                System.out.println("},");
+            }
+        }
+        System.out.println("STAGE");
+        */
     }
 
     /**

@@ -22,8 +22,10 @@ public class MainLoop extends TimerTask {
         //iterate trolleys
         for (Trolley trolley : jsonParser.getTrolleys()) {
             //unload goods
-            if (trolley.getRemainCapacity() == 0 || (trolley.task == null && trolley.getItemInCount() > 0)) {
+
+            if ((trolley.getRemainCapacity() == 0 || (trolley.task == null && trolley.getItemInCount() > 0)) &&  !trolley.unload) {
                 trolley.unload = true;
+                trolley.pathList = null;
             }
 
             //set task to empty trolleys
@@ -50,14 +52,12 @@ public class MainLoop extends TimerTask {
                 //path to unload
                 if (trolley.unload) {
                     // shelves with stages sorted by distance
-                    sortedByDistances.clear();
                     for (Coordinates entry : jsonParser.getStages()) {
                         double distance = entry.getDistance(trolley);
                         sortedByDistances.put(distance, entry);
                     }
                 } else { // path to shelves
                     Map<Coordinates, Shelf> found = jsonParser.findGoods(trolley.task.getKey());
-
                     for (Map.Entry<Coordinates, Shelf> entry : found.entrySet()) {
                         double distance = entry.getKey().getDistance(trolley);
                         sortedByDistances.put(distance, entry.getKey());
@@ -65,32 +65,29 @@ public class MainLoop extends TimerTask {
                 }
 
 
-                System.out.println("Pozadovane zbozi: " + trolley.task + " ks");
-                //compute path to shortest (if exists)
-                if (sortedByDistances.size() == 0) {
-                    System.err.println("!!!!!!! ERROR: POZADOVANE MNOZSTVI NENI SKLADEM !!!!!!!!!");
-                    if (trolley.unload) {
-                        System.err.println("!!!!!!! NENI STAGE !!!!!!!!!");
-                        System.exit(1);
-                    }
-                    trolley.task = null;
-                    continue;
-                }
-                //min distance Cordinates value
-                Coordinates lowestDisanceCord = sortedByDistances.firstEntry().getValue();
+            if(trolley.pathList == null) {
+                //iterate all cordinates if some are unavalable and compute path
                 Coordinates curentCoordinates = new Coordinates((int) trolley.getX(), (int) trolley.getY());
-                //if(trolley.pathList == null || trolley.unload) {
-                trolley.pathList = findPath.aStar(curentCoordinates, lowestDisanceCord);
-                //}
+                trolley.pathList = null;
+                Collection<Coordinates> tmp = sortedByDistances.values();
+                for (Coordinates cord : tmp) {
+                    trolley.pathList = findPath.aStar(curentCoordinates, cord);
+                    trolley.location = cord;
+                    if(trolley.pathList!=null)
+                        break;
+                    else
+                        trolley.location = null;
+                }
+            }
 
-                //no path to this required item
                 if (trolley.pathList == null) {
-                    System.err.println("ERROR - Vozik se nemuze dostat k regalu !");
+                    System.err.println("!!!!!!! ERROR: LOCATION UNAVAILABLE !!!!!!!!!");
                     if (trolley.unload) {
-                        System.err.println("!!!!!!! NENI STAGE !!!!!!!!!");
                         System.exit(1);
                     }
                     trolley.task = null;
+                    trolley.pathList = null;
+                    trolley.location = null;
                     continue;
                 }
 
@@ -101,12 +98,13 @@ public class MainLoop extends TimerTask {
                     trolley.pathList.remove(0);
                 } else if (!trolley.unload) {
                     //next to shelf- load goods = remove items from shelf and add to trolley
-                    Shelf itemShelf = jsonParser.getAllShelfs().get(lowestDisanceCord);
+                    Shelf itemShelf = jsonParser.getAllShelfs().get(trolley.location);
                     //count of items to delete - with respect to max capacity
                     int deleteCount = Math.min(trolley.getRemainCapacity(), trolley.task.getValue());
                     int removedItem = itemShelf.delete_item(trolley.task.getKey(), deleteCount);
                     trolley.task.setValue(trolley.task.getValue() - removedItem);
                     trolley.add_item(trolley.task.getKey(), removedItem);
+                    trolley.pathList = null;
                     //Deleted OK - set task = nul;
                     if (trolley.task.getValue() == 0)
                         trolley.task = null;
