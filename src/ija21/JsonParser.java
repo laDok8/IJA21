@@ -15,13 +15,10 @@ import java.util.*;
 
 public class JsonParser {
 
-
-
-
     private final Map<Coordinates, Shelf> storedObjects = new Hashtable<>();
     private final List<Trolley> trolleyObjects = new ArrayList<>();
     private final List<Coordinates> stagingObjects = new ArrayList<>();
-    private final List<Coordinates> obstacleObjects = new ArrayList<>();
+    private final List<Coordinates> mapEdges = new ArrayList<>();
     private final int maxX;
     private final int maxY;
 
@@ -37,7 +34,6 @@ public class JsonParser {
         JSONArray content = (JSONArray) obj.getOrDefault("content", new JSONArray());
         JSONArray trolley = (JSONArray) obj.getOrDefault("trolley", new JSONArray());
         JSONArray staging = (JSONArray) obj.getOrDefault("staging", new JSONArray());
-        JSONArray obstacle = (JSONArray) obj.getOrDefault("obstacle", new JSONArray());
 
         maxX = ((Long) obj.get("maxX")).intValue() * scale;
         maxY = ((Long) obj.get("maxY")).intValue() * scale;
@@ -82,15 +78,16 @@ public class JsonParser {
             stagingObjects.add(co);
         }
 
-        //iterating obstacles
-        iterator = obstacle.iterator();
-        while (iterator.hasNext()) {
-            Map entry = ((Map) iterator.next());
-            int x = ((Long) entry.get("x")).intValue() * scale;
-            int y = ((Long) entry.get("y")).intValue() * scale;
-            Coordinates co = new Coordinates(x, y,0.9,1,0);
-            obstacleObjects.add(co);
+        //adding rectangles into mapEdge
+        for (int y = 0; y <= maxY; y+=scale){
+            for (int x = 0; x <= maxX; x+=scale){
+                if (x == maxX || y == maxY){
+                    Coordinates co = new Coordinates(x, y, .1, .6, .5);
+                    mapEdges.add(co);
+                }
+            }
         }
+
     }
 
     /**
@@ -105,6 +102,10 @@ public class JsonParser {
                 .filter(map-> map.getValue().getStored().containsKey(name))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         return result;
+    }
+
+    void addShelf(Coordinates cord){
+        this.storedObjects.put(cord,storedObjects.getOrDefault(cord, new Shelf(cord)));
     }
 
     /**
@@ -129,13 +130,12 @@ public class JsonParser {
         return stagingObjects;
     }
     /**
-     * get stored obstacles coordinates
+     * get mapEdge rectangles coordinates
      * @return all existing staging areas
      */
-    List<Coordinates> getObstacle() {
-        return obstacleObjects;
+    List<Coordinates> getEdges() {
+        return mapEdges;
     }
-
     /**
      * accessible JSON structures are limited to 0-maxX on x axis
      * @return map limit in horizontal axis

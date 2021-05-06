@@ -13,9 +13,6 @@ public abstract class Storeable extends Coordinates {
 
     private Map<String,Integer> stored = new HashMap<>();
 
-    public Storeable(int x, int y) {
-        super(x, y);
-    }
 
     public Storeable(Coordinates cord, int R, int G, int B) {
         super(cord, R,G,B);

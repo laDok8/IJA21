@@ -35,11 +35,12 @@ public class Coordinates extends Rectangle {
      */
 
     public Coordinates(int x, int y){
-        super(blockWidth.SCALE,blockWidth.SCALE, Color.BLACK);
-        this.setStroke(Color.BLACK);
+        //transparent
+        super(blockWidth.SCALE,blockWidth.SCALE,Color.TRANSPARENT);
         this.setX(x);
         this.setY(y);
     }
+
     public Coordinates(int x, int y, double R, double G, double B){
         super(blockWidth.SCALE,blockWidth.SCALE, Color.color(R, G, B));
         this.setStroke(Color.BLACK);

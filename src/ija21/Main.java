@@ -16,6 +16,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.event.EventHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
 public class putItems{
     public float x;
@@ -52,13 +55,14 @@ public class putItems{
 */
 
 public class Main extends Application {
-    int mapSpeed = 500;
+    int mapSpeed = 100;
     double mapZOOM = 1.0;
     boolean pausedScene = false;
     boolean scenePlaying = false;
     Pane root;
     Scene scene;
     Controller controller;
+    RequirementsParser reqParserDefault = requirementsProcessing();
 
     @Override
     public void start(Stage primaryStage) {
@@ -76,9 +80,11 @@ public class Main extends Application {
         }
         final int maxX = jsonParser.getMaxX();
         final int maxY = jsonParser.getMaxY();
-        
-        RequirementsParser reqParser = requirementsProcessing();
-        controller = new Controller(root,jsonParser,reqParser.getRequirements(), blockWidth.SCALE);
+
+        //Get all requirements into local
+        Map<String, Integer> reqParser = new HashMap<>();
+        reqParser.putAll(reqParserDefault.getRequirements());
+        controller = new Controller(root, jsonParser, reqParser, blockWidth.SCALE);
 
         //windows params
         int windowWidth = 768;

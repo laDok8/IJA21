@@ -34,15 +34,16 @@ public class RequirementsParser {
             StringBuilder stdinRequirements = new StringBuilder("[");
             int iterator = 1;
             while (true) {
-                String stop = "x";
                 System.out.println("Zadajte nazov polozky " + iterator + ":");
-                String name = scanner.next();
-                if (name.equals(stop)) {
+                String name = scanner.nextLine();
+                //stop if empty line
+                if (name == null || name.equals("")) {
                     break;
                 }
                 System.out.println("Zadajte mnozstvo polozky " + iterator + ":");
-                String amount = scanner.next();
-                if (amount.equals(stop)) {
+                String amount = scanner.nextLine();
+                //stop if empty line
+                if (amount == null || amount.equals("")) {
                     break;
                 }
                 stdinRequirements.append("{");
