@@ -49,7 +49,7 @@ public class MainLoop extends TimerTask {
                 return;
             } else if (requirements.size() == 0 && trolley.task == null && !trolley.unload) {
                 //wait for other to finish
-                return;
+                continue;
             }
 
             //sort shelfs by distance
